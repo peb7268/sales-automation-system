@@ -1,0 +1,246 @@
+{
+  "version": "1.0.0",
+  "description": "Centralized task definitions for MHM sales automation pipeline",
+  "last_updated": "2025-07-31T16:45:00.000Z",
+  
+  "prospecting_tasks": [
+    {
+      "id": "daily_prospect_generation",
+      "name": "Generate Daily Prospects",
+      "description": "Identify and qualify new prospects based on geographic and industry criteria",
+      "type": "scheduled",
+      "schedule": "0 9 * * 1-5",
+      "agent": "prospecting_agent",
+      "enabled": true,
+      "config": {
+        "target_count": 10,
+        "industries": ["restaurants", "retail", "professional_services", "healthcare"],
+        "locations": ["Denver, CO", "Boulder, CO", "Colorado Springs, CO"],
+        "qualification_threshold": 50,
+        "max_concurrent": 5
+      },
+      "output": {
+        "format": "json",
+        "schema": "prospect",
+        "destination": "obsidian_prospects"
+      },
+      "dependencies": [],
+      "retry_config": {
+        "max_attempts": 3,
+        "backoff_seconds": 300
+      }
+    },
+    {
+      "id": "prospect_research_enhancement",
+      "name": "Enhance Prospect Research",
+      "description": "Deep research on existing prospects to improve qualification scores",
+      "type": "triggered",
+      "trigger": "new_prospect_created",
+      "agent": "research_agent",
+      "enabled": true,
+      "config": {
+        "min_qualification_score": 30,
+        "research_depth": "standard",
+        "include_competitors": true,
+        "include_financials": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "prospect_research",
+        "destination": "obsidian_prospects"
+      },
+      "dependencies": ["daily_prospect_generation"]
+    }
+  ],
+
+  "outreach_tasks": [
+    {
+      "id": "pitch_generation",
+      "name": "Generate AI Pitches",
+      "description": "Create customized sales pitches for qualified prospects",
+      "type": "triggered",
+      "trigger": "prospect_qualified",
+      "agent": "pitch_creator_agent",
+      "enabled": true,
+      "config": {
+        "min_qualification_score": 75,
+        "personalization_level": "high",
+        "include_roi_projections": true,
+        "industry_specific": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "pitch_content",
+        "destination": "obsidian_pitches"
+      },
+      "dependencies": ["prospect_research_enhancement"]
+    },
+    {
+      "id": "cold_email_sequence",
+      "name": "Cold Email Automation",
+      "description": "Send personalized cold email sequences to prospects",
+      "type": "triggered",
+      "trigger": "pitch_created",
+      "agent": "email_automation_agent",
+      "enabled": false,
+      "config": {
+        "sequence_type": "3_touch",
+        "delay_between_emails": 72,
+        "personalization": true,
+        "tracking_enabled": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "email_activity",
+        "destination": "obsidian_activities"
+      },
+      "dependencies": ["pitch_generation"]
+    }
+  ],
+
+  "pipeline_tasks": [
+    {
+      "id": "stage_transition_automation",
+      "name": "Automate Pipeline Stage Transitions",
+      "description": "Automatically advance prospects through pipeline stages based on activities",
+      "type": "scheduled",
+      "schedule": "0 */6 * * *",
+      "agent": "pipeline_manager",
+      "enabled": true,
+      "config": {
+        "auto_advance_rules": {
+          "cold_to_contacted": {
+            "condition": "successful_contact",
+            "delay_hours": 0
+          },
+          "contacted_to_interested": {
+            "condition": "positive_response",
+            "delay_hours": 24
+          },
+          "interested_to_qualified": {
+            "condition": "qualification_score >= 75",
+            "delay_hours": 0
+          }
+        }
+      },
+      "output": {
+        "format": "json",
+        "schema": "stage_transition",
+        "destination": "obsidian_activities"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "stagnant_prospect_identification",
+      "name": "Identify Stagnant Prospects",
+      "description": "Flag prospects that haven't had activity in specified timeframes",
+      "type": "scheduled",
+      "schedule": "0 10 * * *",
+      "agent": "pipeline_analyzer",
+      "enabled": true,
+      "config": {
+        "stagnant_days": {
+          "cold": 7,
+          "contacted": 5,
+          "interested": 3,
+          "qualified": 2
+        },
+        "auto_flag": true,
+        "generate_follow_up_tasks": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "prospect_alert",
+        "destination": "obsidian_activities"
+      },
+      "dependencies": []
+    }
+  ],
+
+  "analytics_tasks": [
+    {
+      "id": "daily_analytics_update",
+      "name": "Update Analytics Dashboard",
+      "description": "Generate fresh analytics data and update Obsidian dashboard",
+      "type": "scheduled",
+      "schedule": "0 8,14,20 * * *",
+      "agent": "analytics_generator",
+      "enabled": true,
+      "config": {
+        "include_charts": true,
+        "include_kpis": true,
+        "include_trends": true,
+        "retention_days": 30
+      },
+      "output": {
+        "format": "json",
+        "schema": "analytics_data",
+        "destination": "obsidian_dashboard"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "kanban_sync",
+      "name": "Synchronize Kanban Board",
+      "description": "Update Kanban board with latest prospect data and pipeline changes",
+      "type": "triggered",
+      "trigger": "prospect_updated",
+      "agent": "kanban_manager",
+      "enabled": true,
+      "config": {
+        "auto_sort": true,
+        "include_metadata": true,
+        "update_cards": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "kanban_update",
+        "destination": "obsidian_kanban"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "performance_reporting",
+      "name": "Generate Performance Reports",
+      "description": "Create weekly and monthly performance analysis reports",
+      "type": "scheduled",
+      "schedule": "0 9 * * 1",
+      "agent": "report_generator",
+      "enabled": true,
+      "config": {
+        "report_types": ["weekly", "monthly"],
+        "include_forecasting": true,
+        "include_recommendations": true
+      },
+      "output": {
+        "format": "json",
+        "schema": "performance_report",
+        "destination": "obsidian_reports"
+      },
+      "dependencies": ["daily_analytics_update"]
+    }
+  ],
+
+  "maintenance_tasks": [
+    {
+      "id": "data_cleanup",
+      "name": "Clean Up Old Data",
+      "description": "Archive old prospects and clean up temporary files",
+      "type": "scheduled",
+      "schedule": "0 2 1 * *",
+      "agent": "data_manager",
+      "enabled": true,
+      "config": {
+        "archive_after_days": 90,
+        "cleanup_temp_files": true,
+        "maintain_backups": 3
+      },
+      "output": {
+        "format": "json",
+        "schema": "cleanup_report",
+        "destination": "system_logs"
+      },
+      "dependencies": []
+    }
+  ]
+}

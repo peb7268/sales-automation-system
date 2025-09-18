@@ -1,0 +1,243 @@
+{
+  "template": {
+    "name": "Automated Sales Caller - Call Tracking",
+    "description": "Template for tracking automated sales calls, prospect data, and qualification results",
+    "sheets": [
+      {
+        "name": "Call Log",
+        "purpose": "Track all individual calls with detailed information",
+        "columns": [
+          {
+            "name": "Call ID",
+            "type": "string",
+            "description": "Unique identifier for each call",
+            "example": "CALL_20250825_001"
+          },
+          {
+            "name": "Date",
+            "type": "date",
+            "description": "Date when call was made",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "name": "Time",
+            "type": "time",
+            "description": "Time when call was made",
+            "format": "HH:MM AM/PM"
+          },
+          {
+            "name": "Prospect Name",
+            "type": "string",
+            "description": "Name of the person contacted"
+          },
+          {
+            "name": "Company",
+            "type": "string",
+            "description": "Company name of the prospect"
+          },
+          {
+            "name": "Phone Number",
+            "type": "string",
+            "description": "Phone number called",
+            "format": "+1XXXXXXXXXX"
+          },
+          {
+            "name": "Industry",
+            "type": "string",
+            "description": "Industry classification",
+            "examples": ["Restaurant", "Retail", "Healthcare", "Professional Services"]
+          },
+          {
+            "name": "Call Duration (min)",
+            "type": "number",
+            "description": "Duration of call in minutes"
+          },
+          {
+            "name": "Call Status",
+            "type": "enum",
+            "description": "Outcome of the call attempt",
+            "options": ["Connected", "Voicemail", "No Answer", "Busy", "Disconnected", "Invalid Number"]
+          },
+          {
+            "name": "Qualification Score",
+            "type": "number",
+            "description": "AI qualification score 1-10",
+            "range": "1-10",
+            "note": "7+ considered qualified"
+          },
+          {
+            "name": "Interest Level",
+            "type": "enum",
+            "description": "Prospect's interest level",
+            "options": ["High", "Medium", "Low", "None", "Hostile"]
+          },
+          {
+            "name": "Next Action",
+            "type": "enum",
+            "description": "Recommended follow-up action",
+            "options": ["Schedule Meeting", "Send Follow-up SMS", "Email Info", "Call Back Later", "Remove from List"]
+          },
+          {
+            "name": "Notes",
+            "type": "text",
+            "description": "Call summary and key points"
+          },
+          {
+            "name": "Meeting Booked",
+            "type": "boolean",
+            "description": "Whether a meeting was successfully scheduled",
+            "format": "Yes/No"
+          },
+          {
+            "name": "Recording URL",
+            "type": "url",
+            "description": "Link to call recording (if available)"
+          }
+        ]
+      },
+      {
+        "name": "Daily Summary",
+        "purpose": "Track daily performance metrics and KPIs",
+        "columns": [
+          {
+            "name": "Date",
+            "type": "date",
+            "description": "Date of the summary"
+          },
+          {
+            "name": "Total Calls",
+            "type": "number",
+            "description": "Total number of call attempts"
+          },
+          {
+            "name": "Successful Connections",
+            "type": "number",
+            "description": "Number of calls that connected to a person"
+          },
+          {
+            "name": "Qualified Prospects",
+            "type": "number",
+            "description": "Number of prospects scoring 7+ qualification"
+          },
+          {
+            "name": "Meetings Booked",
+            "type": "number",
+            "description": "Number of meetings successfully scheduled"
+          },
+          {
+            "name": "Connection Rate %",
+            "type": "percentage",
+            "description": "Percentage of calls that connected",
+            "calculation": "Successful Connections / Total Calls * 100"
+          },
+          {
+            "name": "Qualification Rate %",
+            "type": "percentage",
+            "description": "Percentage of connections that qualified",
+            "calculation": "Qualified Prospects / Successful Connections * 100"
+          },
+          {
+            "name": "Booking Rate %",
+            "type": "percentage",
+            "description": "Percentage of qualified prospects that booked",
+            "calculation": "Meetings Booked / Qualified Prospects * 100"
+          },
+          {
+            "name": "Total Call Time (min)",
+            "type": "number",
+            "description": "Total time spent on calls for the day"
+          },
+          {
+            "name": "Notes",
+            "type": "text",
+            "description": "Daily observations and insights"
+          }
+        ]
+      },
+      {
+        "name": "Qualified Leads",
+        "purpose": "Track qualified prospects through the sales funnel",
+        "columns": [
+          {
+            "name": "Lead ID",
+            "type": "string",
+            "description": "Unique identifier for the qualified lead"
+          },
+          {
+            "name": "Date Qualified",
+            "type": "date",
+            "description": "Date when prospect was qualified"
+          },
+          {
+            "name": "Prospect Name",
+            "type": "string",
+            "description": "Name of the qualified prospect"
+          },
+          {
+            "name": "Company",
+            "type": "string",
+            "description": "Company name"
+          },
+          {
+            "name": "Phone Number",
+            "type": "string",
+            "description": "Contact phone number"
+          },
+          {
+            "name": "Email",
+            "type": "email",
+            "description": "Email address (if obtained)"
+          },
+          {
+            "name": "Industry",
+            "type": "string",
+            "description": "Industry classification"
+          },
+          {
+            "name": "Qualification Score",
+            "type": "number",
+            "description": "AI qualification score",
+            "range": "7-10"
+          },
+          {
+            "name": "Interest Level",
+            "type": "enum",
+            "description": "Expressed interest level",
+            "options": ["High", "Medium"]
+          },
+          {
+            "name": "Meeting Scheduled",
+            "type": "boolean",
+            "description": "Whether meeting is scheduled",
+            "format": "Yes/No"
+          },
+          {
+            "name": "Linear Project Created",
+            "type": "boolean",
+            "description": "Whether Linear project was created",
+            "format": "Yes/No"
+          },
+          {
+            "name": "Status",
+            "type": "enum",
+            "description": "Current lead status",
+            "options": ["New", "Contacted", "Meeting Set", "Proposal Sent", "Won", "Lost"]
+          }
+        ]
+      }
+    ],
+    "kpis": {
+      "target_call_volume": 50,
+      "target_connection_rate": 30,
+      "target_qualification_rate": 15,
+      "target_booking_rate": 5,
+      "minimum_qualification_score": 7
+    },
+    "automation": {
+      "update_frequency": "real-time",
+      "daily_summary_time": "11:59 PM",
+      "data_sources": ["Vapi AI", "Twilio", "Make.com"],
+      "integrations": ["Linear", "Obsidian", "Sales Automation System"]
+    }
+  }
+}

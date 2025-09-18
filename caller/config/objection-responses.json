@@ -1,0 +1,183 @@
+{
+  "commonObjections": {
+    "notInterested": {
+      "responses": [
+        "I understand, and I appreciate your honesty. Before I let you go, can I ask what's working well for you with your current marketing efforts?",
+        "No problem at all. Just out of curiosity, is it that you're happy with your current marketing results, or is it more of a timing issue?",
+        "That's perfectly fine. Would it be okay if I sent you some quick tips specific to {{prospect.industry}} businesses that you could implement on your own?"
+      ],
+      "followUp": "Would you prefer I reach out again in 6 months, or would you rather I remove you from our list entirely?"
+    },
+    "tooExpensive": {
+      "responses": [
+        "I completely understand budget concerns. Many of our clients initially thought the same thing, but found that good marketing actually pays for itself. Could we explore some cost-effective options that might work for your budget?",
+        "That's a valid concern. What if I showed you how our strategies typically generate 3-5x return on investment? Would that change the equation for you?",
+        "I hear you on the cost. Many {{prospect.industry}} businesses in {{prospect.location}} have found that not investing in marketing costs them more in lost opportunities. Could we look at what you're currently missing out on?"
+      ],
+      "followUp": "What kind of marketing budget would make sense for a business like {{prospect.businessName}}?"
+    },
+    "alreadyHaveMarketing": {
+      "responses": [
+        "That's fantastic that you're already investing in marketing! In my experience, businesses that are already marketing often see the biggest improvements when they optimize what they're doing. What's working best for you right now?",
+        "Great to hear you're proactive with marketing. We often help businesses like {{prospect.businessName}} identify blind spots or missed opportunities in their existing strategy. What channels are you currently using?",
+        "Perfect! It sounds like you understand the value of marketing. We specialize in helping businesses maximize their existing marketing investments. Are you getting the results you'd hoped for?"
+      ],
+      "followUp": "Would you be open to a free audit to see if there are any gaps or opportunities you might be missing?"
+    },
+    "noTime": {
+      "responses": [
+        "I totally get it - running {{prospect.businessName}} keeps you incredibly busy. That's actually why our clients love working with us - we handle the marketing so you can focus on what you do best. When would be a better time to chat briefly?",
+        "I understand completely. Time is your most valuable resource. That's exactly why we focus on marketing strategies that save you time while bringing in more business. Could we find just 10 minutes sometime this week?",
+        "I hear you on being busy. Quick question - if I could show you a way to bring in more {{prospect.industry}} customers without taking any of your time, would that be worth a brief conversation?"
+      ],
+      "followUp": "Would early morning or later in the evening work better for your schedule?"
+    },
+    "needToThinkAbout": {
+      "responses": [
+        "Absolutely, this is an important decision for {{prospect.businessName}}. While you're considering it, would it be helpful if I sent you some case studies of other {{prospect.industry}} businesses we've helped?",
+        "Of course, you should definitely think it over. What specific information would help you make the best decision for your business?",
+        "That makes perfect sense. Most of our best clients took time to think it through. What's the main thing you'd want to understand better about our approach?"
+      ],
+      "followUp": "When would be a good time to follow up after you've had a chance to think it over?"
+    },
+    "competitorWorking": {
+      "responses": [
+        "That's good that you have someone working on your marketing. How long have you been working with them, and are you getting the results you expected?",
+        "I'm glad to hear you have marketing support. Many of our clients were working with other agencies before they found us. What made you choose your current provider?",
+        "It's smart that you're already investing in marketing. Without speaking negatively about anyone, I'm curious - are you completely satisfied with your current results?"
+      ],
+      "followUp": "Would you be open to a second opinion or free analysis, just to benchmark how you're doing?"
+    },
+    "businessTooSmall": {
+      "responses": [
+        "Actually, we love working with businesses your size because smaller businesses often see faster results and can implement changes more quickly than large corporations. What makes you feel your business might be too small?",
+        "Size isn't what matters - results are. Some of our most successful campaigns have been with smaller {{prospect.industry}} businesses because we can create more targeted, personal approaches. How many customers do you serve monthly?",
+        "I understand that concern, but many smaller businesses actually have advantages in marketing because you can be more agile and personal. Plus, we have packages specifically designed for businesses like {{prospect.businessName}}."
+      ],
+      "followUp": "Would you like to hear about some results we've achieved with other local {{prospect.industry}} businesses?"
+    },
+    "justStartingOut": {
+      "responses": [
+        "That's actually an exciting time! Getting your marketing foundation right from the beginning can save you thousands of dollars and years of trial and error. What's your biggest challenge as you get started?",
+        "Perfect timing! It's much easier to build effective marketing from the ground up than to fix marketing that's not working. What's your main goal for the first year?",
+        "Starting out is the best time to invest in marketing because every new customer has huge value for your business. What's your plan for getting your first customers?"
+      ],
+      "followUp": "Would you like to see some startup-friendly options that can grow with your business?"
+    },
+    "seasonalBusiness": {
+      "responses": [
+        "Seasonal businesses actually present great marketing opportunities! During your busy season, we can maximize your profits, and during slow periods, we can build awareness for next season. When is your peak season?",
+        "That's actually perfect for strategic marketing. We can help you extend your season, increase revenue during peak times, and prepare for next year during the slower months. How long is your busy season?",
+        "Seasonal businesses often see the biggest returns on marketing because you can capture a whole year's worth of customers in a short window. Are you maximizing your current peak season?"
+      ],
+      "followUp": "Would you be interested in strategies to either extend your season or maximize revenue during your busy period?"
+    },
+    "economicConcerns": {
+      "responses": [
+        "I understand the concern about the economy. Interestingly, businesses that maintain or increase their marketing during uncertain times often come out stronger and gain market share. How has your business been affected?",
+        "Economic uncertainty is exactly when smart marketing becomes most important. While your competitors might be cutting back, you could be capturing more of the market. What changes have you noticed in your industry?",
+        "That's a valid concern, and it's exactly why we focus on marketing strategies that show clear, measurable ROI. Would you be interested in approaches that are proven to work even in tough economic times?"
+      ],
+      "followUp": "What would need to happen for you to feel confident about investing in growth right now?"
+    }
+  },
+  "industrySpecificObjections": {
+    "restaurant": {
+      "deliveryAppsHurt": {
+        "responses": [
+          "I hear this from a lot of restaurant owners. While delivery apps take a commission, we can help you build direct ordering systems and loyalty programs that keep more profit in your pocket. Are you losing money on delivery apps?",
+          "That's exactly why many restaurants are focusing on building their own customer base through marketing. Would you be interested in strategies to reduce your dependence on delivery platforms?"
+        ]
+      },
+      "reviewsAreBad": {
+        "responses": [
+          "Bad reviews can definitely hurt, but they're also an opportunity. We help restaurants turn their reputation around and get more positive reviews. How are your current online reviews affecting your business?",
+          "Review management is one of our specialties. We've helped restaurants go from 2-star averages to 4.5+ stars. Would you like to hear how we do it?"
+        ]
+      }
+    },
+    "retail": {
+      "onlineCompetition": {
+        "responses": [
+          "Online competition is tough, but local businesses have advantages that Amazon can't match - personal service, community connection, and immediate gratification. How are you differentiating from online retailers?",
+          "That's exactly why local marketing is so important. We help retail businesses emphasize what makes them special and attract customers who value the local experience. What's unique about shopping at {{prospect.businessName}}?"
+        ]
+      }
+    },
+    "healthcare": {
+      "patientPrivacy": {
+        "responses": [
+          "Patient privacy is absolutely critical, and all our healthcare marketing is fully HIPAA compliant. We focus on educational content and reputation management without ever compromising patient information. What's your biggest concern about marketing compliance?",
+          "We specialize in healthcare marketing and understand all the privacy requirements. Our strategies help you attract patients while maintaining complete compliance. Would you like to see examples of compliant healthcare marketing?"
+        ]
+      }
+    },
+    "professional_services": {
+      "referralsOnly": {
+        "responses": [
+          "Referrals are fantastic - they show you're doing great work! But what happens when referrals slow down or you want to grow faster? We help professional service firms supplement referrals with consistent lead generation. How predictable is your referral flow?",
+          "Word-of-mouth is the best marketing, and we can help you get more of it through reputation management and client success stories. Would you be interested in strategies to generate more referrals?"
+        ]
+      }
+    }
+  },
+  "closingObjections": {
+    "needToTalkToPartner": {
+      "responses": [
+        "Absolutely, this kind of decision should involve all the key stakeholders. Would it be helpful if I scheduled a call that includes your partner so we can answer any questions together?",
+        "Of course, that makes perfect sense. When do you typically discuss business decisions like this? I'd be happy to present to both of you."
+      ]
+    },
+    "wrongTimeOfYear": {
+      "responses": [
+        "I understand timing concerns. When would be the ideal time to start a marketing initiative for {{prospect.businessName}}? We can plan ahead and launch when it makes the most sense for your business.",
+        "Good point about timing. Many businesses actually prefer to start marketing during slower periods so they can build momentum for their busy season. When is your peak season?"
+      ]
+    },
+    "checkWithAccountant": {
+      "responses": [
+        "That's very responsible of you. Many businesses find that marketing expenses are tax-deductible and provide measurable ROI. Would it help if I provided documentation that your accountant could review?",
+        "Smart to involve your accountant! We can provide all the financial projections and ROI calculations they'd need to see. What information would be most helpful?"
+      ]
+    }
+  },
+  "positiveResponses": {
+    "tellMeMore": {
+      "responses": [
+        "Great! I'd love to learn more about {{prospect.businessName}} first. What's your main goal - are you looking to get more customers, increase sales from existing customers, or both?",
+        "Perfect! Let me ask you a few quick questions to make sure I share the most relevant information. What's working best for you right now in terms of getting new customers?"
+      ]
+    },
+    "whatDoYouCharge": {
+      "responses": [
+        "Great question! Our pricing depends on what makes the most sense for your specific situation and goals. Rather than giving you generic numbers, could we schedule 15 minutes to discuss what {{prospect.businessName}} needs? Then I can provide accurate pricing.",
+        "I'm glad you're thinking about the investment! Our packages are customized based on your business size, goals, and industry. What's your current monthly marketing budget, if you don't mind me asking?"
+      ]
+    },
+    "scheduleCall": {
+      "responses": [
+        "Perfect! I have some availability tomorrow afternoon or Thursday morning. What works better for your schedule?",
+        "Excellent! Would you prefer a morning or afternoon call? I want to make sure we have enough time to really dive into opportunities for {{prospect.businessName}}."
+      ]
+    }
+  },
+  "questionsToAsk": {
+    "qualifying": [
+      "What's your biggest challenge in getting new customers right now?",
+      "How do most of your current customers find you?",
+      "What's working best for you in terms of marketing right now?",
+      "What would doubling your customer base mean for your business?",
+      "Who typically makes marketing decisions for {{prospect.businessName}}?"
+    ],
+    "budget": [
+      "What do you currently invest in marketing monthly?",
+      "If I could show you a way to get a 300% return on your marketing investment, what kind of budget would make sense?",
+      "How much would gaining 10 new customers be worth to your business?"
+    ],
+    "timing": [
+      "When would be the ideal time to start seeing more customers?",
+      "What's preventing you from growing as fast as you'd like right now?",
+      "If we could start getting you results within 30 days, would that timeline work for you?"
+    ]
+  }
+}

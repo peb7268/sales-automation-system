@@ -1,0 +1,219 @@
+{
+  "version": "1.0.0",
+  "description": "Automation rules and triggers for pipeline stage transitions",
+  "last_updated": "2025-07-31T16:45:00.000Z",
+
+  "stage_transitions": {
+    "cold_to_contacted": {
+      "conditions": [
+        {
+          "type": "activity_recorded",
+          "activity_types": ["call", "email", "linkedin_message"],
+          "outcome": ["completed", "positive"]
+        }
+      ],
+      "actions": [
+        {
+          "type": "update_stage",
+          "new_stage": "contacted"
+        },
+        {
+          "type": "log_activity",
+          "message": "Prospect moved to contacted stage"
+        }
+      ],
+      "delay_hours": 0,
+      "auto_execute": true
+    },
+    "contacted_to_interested": {
+      "conditions": [
+        {
+          "type": "activity_recorded",
+          "activity_types": ["call", "email", "meeting"],
+          "outcome": ["positive"],
+          "response_received": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "update_stage",
+          "new_stage": "interested"
+        },
+        {
+          "type": "increase_qualification_score",
+          "points": 10
+        },
+        {
+          "type": "trigger_task",
+          "task_id": "pitch_generation"
+        }
+      ],
+      "delay_hours": 2,
+      "auto_execute": true
+    },
+    "interested_to_qualified": {
+      "conditions": [
+        {
+          "type": "qualification_score",
+          "operator": ">=",
+          "value": 75
+        },
+        {
+          "type": "activity_recorded",
+          "activity_types": ["meeting", "call"],
+          "outcome": ["positive"],
+          "in_last_days": 7
+        }
+      ],
+      "actions": [
+        {
+          "type": "update_stage",
+          "new_stage": "qualified"
+        },
+        {
+          "type": "flag_high_priority",
+          "priority": "high"
+        },
+        {
+          "type": "trigger_task",
+          "task_id": "cold_email_sequence"
+        }
+      ],
+      "delay_hours": 0,
+      "auto_execute": true
+    },
+    "qualified_to_closed_won": {
+      "conditions": [
+        {
+          "type": "manual_approval",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "update_stage",
+          "new_stage": "closed_won"
+        },
+        {
+          "type": "record_revenue",
+          "source": "estimated_deal_value"
+        },
+        {
+          "type": "trigger_task",
+          "task_id": "performance_reporting"
+        }
+      ],
+      "delay_hours": 0,
+      "auto_execute": false
+    }
+  },
+
+  "qualification_rules": {
+    "scoring_factors": {
+      "business_size": {
+        "weight": 0.2,
+        "criteria": {
+          "micro": 5,
+          "small": 15,
+          "medium": 20,
+          "large": 18
+        }
+      },
+      "digital_presence": {
+        "weight": 0.2,
+        "criteria": {
+          "has_website": 5,
+          "has_google_business": 5,
+          "has_social_media": 5,
+          "has_online_reviews": 5
+        }
+      },
+      "market_opportunity": {
+        "weight": 0.2,
+        "criteria": {
+          "competitive_density": {
+            "low": 20,
+            "medium": 15,
+            "high": 10
+          },
+          "market_growth": {
+            "growing": 15,
+            "stable": 10,
+            "declining": 5
+          }
+        }
+      },
+      "revenue_potential": {
+        "weight": 0.2,
+        "criteria": {
+          "estimated_revenue": {
+            ">= 1000000": 20,
+            ">= 500000": 15,
+            ">= 100000": 10,
+            "< 100000": 5
+          }
+        }
+      },
+      "contact_quality": {
+        "weight": 0.2,
+        "criteria": {
+          "decision_maker_identified": 10,
+          "contact_info_complete": 5,
+          "previous_interaction": 5
+        }
+      }
+    },
+    "auto_qualification_threshold": 75,
+    "manual_review_threshold": 60
+  },
+
+  "alert_rules": {
+    "stagnant_prospects": {
+      "cold": {
+        "days": 7,
+        "action": "auto_follow_up",
+        "message": "Cold prospect needs follow-up"
+      },
+      "contacted": {
+        "days": 5,
+        "action": "schedule_call",
+        "message": "Contacted prospect needs call scheduled"
+      },
+      "interested": {
+        "days": 3,
+        "action": "urgent_follow_up",
+        "message": "Interested prospect going cold"
+      },
+      "qualified": {
+        "days": 2,
+        "action": "escalate_to_human",
+        "message": "Qualified prospect needs immediate attention"
+      }
+    },
+    "performance_alerts": {
+      "low_daily_prospects": {
+        "threshold": 5,
+        "action": "increase_prospecting",
+        "message": "Daily prospect generation below target"
+      },
+      "low_qualification_rate": {
+        "threshold": 0.03,
+        "action": "review_criteria",
+        "message": "Qualification rate below 3%"
+      }
+    }
+  },
+
+  "data_validation": {
+    "required_fields": {
+      "prospect": ["company", "industry", "location", "primary_contact", "phone", "email"],
+      "activity": ["prospect_id", "activity_type", "date", "outcome"],
+      "campaign": ["name", "target_industry", "start_date", "budget"]
+    },
+    "field_formats": {
+      "email": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+      "phone": "^\\([0-9]{3}\\) [0-9]{3}-[0-9]{4}$",
+      "qualification_score": "^[0-9]{1,3}$"
+    }
+  }
+}

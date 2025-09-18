@@ -1,0 +1,112 @@
+{
+  "prospectingAgent": {
+    "name": "Geographic Prospecting Agent",
+    "version": "1.0.0",
+    "description": "AI agent for geographic-based lead generation and customer profile building",
+    "settings": {
+      "geographic": {
+        "defaultCity": "Denver",
+        "defaultState": "CO",
+        "defaultRadius": 25,
+        "maxRadius": 100,
+        "radiusUnits": "miles",
+        "supportedCountries": ["US"],
+        "timeZones": ["America/Denver", "America/Los_Angeles", "America/Chicago", "America/New_York"]
+      },
+      "targeting": {
+        "industries": [
+          "restaurants",
+          "retail",
+          "professional_services",
+          "healthcare",
+          "real_estate",
+          "automotive",
+          "home_services",
+          "fitness",
+          "beauty_salons",
+          "legal_services"
+        ],
+        "businessSizes": {
+          "min": 1,
+          "max": 50,
+          "preferred": "5-25"
+        },
+        "revenueRange": {
+          "min": 100000,
+          "max": 10000000,
+          "currency": "USD"
+        }
+      },
+      "qualification": {
+        "scoringCriteria": {
+          "businessSize": 20,
+          "digitalPresence": 25,
+          "competitorGaps": 20,
+          "location": 15,
+          "industry": 10,
+          "revenueIndicators": 10
+        },
+        "minimumScore": 50,
+        "autoQualifyThreshold": 80
+      },
+      "dataCollection": {
+        "requiredFields": [
+          "business_name",
+          "industry",
+          "location",
+          "phone"
+        ],
+        "optionalFields": [
+          "email",
+          "website",
+          "owner_name",
+          "decision_maker",
+          "social_profiles",
+          "employee_count",
+          "revenue_estimate"
+        ],
+        "emailPatterns": {
+          "commonFormats": [
+            "{first}@{domain}",
+            "{first}.{last}@{domain}",
+            "{first}{last}@{domain}",
+            "{last}@{domain}",
+            "info@{domain}",
+            "contact@{domain}",
+            "sales@{domain}"
+          ]
+        }
+      },
+      "rateLimits": {
+        "googleMaps": {
+          "requestsPerSecond": 10,
+          "requestsPerDay": 1000
+        },
+        "yellowPages": {
+          "requestsPerSecond": 5,
+          "requestsPerDay": 500
+        },
+        "firecrawl": {
+          "requestsPerSecond": 2,
+          "requestsPerDay": 100
+        },
+        "perplexity": {
+          "requestsPerSecond": 1,
+          "requestsPerDay": 50
+        }
+      }
+    },
+    "outputs": {
+      "dailyTargets": {
+        "prospectsIdentified": 10,
+        "qualifiedProspects": 5,
+        "profilesCreated": 10
+      },
+      "obsidianIntegration": {
+        "createProfiles": true,
+        "updatePipeline": true,
+        "tagProspects": true
+      }
+    }
+  }
+}

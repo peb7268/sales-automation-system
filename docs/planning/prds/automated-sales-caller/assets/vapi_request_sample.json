@@ -1,0 +1,74 @@
+{
+  "phoneNumberId": "YOUR_VAPI_PHONE_NUMBER_ID",
+  "customer": {
+    "number": "+15551234567"
+  },
+  "assistant": {
+    "firstMessage": "Hi Jane Smith, this is Sarah from Mile High Marketing calling for Prospect Industries. I've been researching Manufacturing businesses in your area and noticed Prospect Industries has been doing great work.",
+    "model": {
+      "provider": "openai",
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "systemMessage": "You are Sarah from Mile High Marketing. You are professional, friendly, and focused on helping businesses grow. Use the provided script as a guide but sound natural. Always qualify prospects based on budget, authority, need, and timeline. Key qualification questions: 1) What's your biggest challenge attracting customers? 2) Current marketing efforts? 3) How do you get customers now? Score prospects: Interested in growth (+20), Has budget/authority (+30), Has timeline (+20), Current challenges (+15), Meeting scheduled (+40). Temperature: Hot (85+), Warm (50-84), Cold (<50)."
+    },
+    "voice": {
+      "provider": "11labs",
+      "voiceId": "sarah"
+    },
+    "backgroundSound": "office",
+    "recordingEnabled": true,
+    "hipaaEnabled": false,
+    "clientMessages": ["conversation-update", "hang", "speech-update"],
+    "serverMessages": ["conversation-update", "hang", "speech-update"],
+    "silenceTimeoutSeconds": 30,
+    "maxDurationSeconds": 600,
+    "backgroundDenoisingEnabled": true,
+    "modelOutputInMessagesEnabled": true
+  },
+  "metadata": {
+    "leadId": "1",
+    "company": "Prospect Industries", 
+    "leadName": "Jane Smith",
+    "industry": "Manufacturing",
+    "dm": "Rebecca Olson",
+    "temp": "Warm",
+    "webhook": "https://hook.us2.make.com/gugssi64ofbr3vgny705qg2tdsvrgjlx"
+  }
+}
+
+Example response from Vapi:
+{
+  "success": true,
+  "id": "call_123abc",
+  "orgId": "org_456def",
+  "createdAt": "2025-09-17T10:30:00.000Z",
+  "updatedAt": "2025-09-17T10:30:00.000Z",
+  "type": "outboundPhoneCall",
+  "phoneNumberId": "pn_789ghi",
+  "customerId": "cust_101112",
+  "status": "queued",
+  "assistantId": "asst_131415"
+}
+
+Webhook payload sent to Make.com after call completion:
+{
+  "callId": "call_123abc",
+  "orgId": "org_456def", 
+  "callStatus": "completed",
+  "outcome": "meeting-scheduled",
+  "duration": 245,
+  "cost": 0.82,
+  "summary": "Prospect interested in digital marketing services. Has budget of $2500/month. Needs help with online lead generation. Scheduled demo for Thursday 2pm.",
+  "transcript": "...",
+  "recording": "https://vapi.ai/recordings/call_123abc.mp3",
+  "qualificationScore": 95,
+  "temperature": "Hot",
+  "meetingTime": "2025-09-19T14:00:00.000Z",
+  "reason": null,
+  "metadata": {
+    "leadId": "1",
+    "company": "Prospect Industries",
+    "leadName": "Jane Smith",
+    "industry": "Manufacturing"
+  }
+}

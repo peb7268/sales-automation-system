@@ -1,0 +1,354 @@
+<html><head><meta charset="utf-8"/><title>Sales Automation Test Results</title><style type="text/css">:root {
+  --text-primary: #111;
+  --text-secondary: #4f4f4f;
+  --success: #006633;
+  --success-bright: #80ffbf;
+  --danger: #cc071e;
+  --danger-bright: #fbdfe0;
+  --warning: #995c00;
+  --warning-bright: #ffeea8;
+  --panel: #eee;
+  --border: #949494;
+  --disabled: #6b6b6b;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+body {
+  padding: 2rem 1rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+#metadata-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.additional-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/** SUMMARY */
+#summary {
+  color: var(--text-primary);
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 0.5rem;
+  background: var(--panel);
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: var(--success);
+  border-left: 0.4rem solid var(--success);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: var(--danger);
+  border-left: 0.4rem solid var(--danger);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-pending {
+  color: var(--warning);
+  border-left: 0.4rem solid var(--warning);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-empty {
+  color: var(--disabled);
+  border-left: 0.4rem solid var(--disabled);
+  margin-bottom: 0.15rem;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: var(--success-bright);
+  color: var(--success);
+}
+.test-result.failed {
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.test-result.pending {
+  background-color: var(--warning-bright);
+  color: var(--warning);
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--danger);
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 1rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: var(--panel);
+  color: var(--text-secondary);
+  border: 0.15rem solid;
+  border-color: var(--panel);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 1rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
+}
+.suite-info .suite-time.warn {
+  background-color: var(--danger);
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 1rem;
+  transform: rotate(180deg) translateY(0.15rem);
+}
+.suite-container[open] .suite-info:before {
+  transform: rotate(0deg) translateY(0.15rem);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--panel);
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><main class="jesthtml-content"><header><h1 id="title">Sales Automation Test Results</h1></header><section id="metadata-container"><div id="timestamp">Started: 2025-09-06 11:43:43</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (4)</div><div class="summary-passed  summary-empty">0 passed</div><div class="summary-failed ">4 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (0)</div><div class="summary-passed  summary-empty">0 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></section><details id="suite-1" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/pbarrick/Desktop/dev/MHM/components/sales-pipeline/tests/utils/obsidian/frontmatter-parser.test.ts</div><div class="suite-time">0s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="failureMessages suiteFailure"> <pre class="failureMsg">  ● Test suite failed to run
+
+    src/utils/obsidian/frontmatter-parser.ts:233:7 - error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+
+    233       link: match[1],
+              ~~~~
+
+      src/utils/obsidian/frontmatter-parser.ts:228:24
+        228   const links: Array&lt;{ link: string; display?: string }&gt; = [];
+                                   ~~~~
+        The expected type comes from property 'link' which is declared here on type '{ link: string; display?: string; }'
+</pre></div></div></div></details><details id="suite-2" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/pbarrick/Desktop/dev/MHM/components/sales-pipeline/tests/utils/obsidian/vault-integration.test.ts</div><div class="suite-time">0s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="failureMessages suiteFailure"> <pre class="failureMsg">  ● Test suite failed to run
+
+    src/utils/obsidian/vault-integration.ts:20:3 - error TS6133: 'parseFrontmatter' is declared but its value is never read.
+
+    20   parseFrontmatter
+         ~~~~~~~~~~~~~~~~
+    src/utils/obsidian/vault-integration.ts:399:11 - error TS6133: 'frontmatterToProspect' is declared but its value is never read.
+
+    399   private frontmatterToProspect(frontmatter: any, filePath: string): Prospect | null {
+                  ~~~~~~~~~~~~~~~~~~~~~
+    src/utils/obsidian/vault-integration.ts:403:7 - error TS2739: Type '{ id: any; filePath: string; created: Date; updated: Date; tags: any; business: { name: any; industry: any; location: { city: any; state: any; country: string; }; size: { category: any; employeeCount: any; estimatedRevenue: any; }; digitalPresence: { ...; }; }; ... 4 more ...; obsidianMeta: { ...; }; }' is missing the following properties from type 'Prospect': dataConfidence, dataSources, overallConfidence
+
+    403       return {
+              ~~~~~~
+</pre></div></div></div></details><details id="suite-3" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/pbarrick/Desktop/dev/MHM/components/sales-pipeline/tests/utils/validation/prospect-validation.test.ts</div><div class="suite-time">0s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="failureMessages suiteFailure"> <pre class="failureMsg">  ● Test suite failed to run
+
+    src/utils/validation/prospect-validation.ts:12:3 - error TS6133: 'Industry' is declared but its value is never read.
+
+    12   Industry,
+         ~~~~~~~~
+    src/utils/validation/prospect-validation.ts:215:25 - error TS2322: Type '"lost"' is not assignable to type 'PipelineStage'.
+
+    215     cold: ['contacted', 'lost'],
+                                ~~~~~~
+    src/utils/validation/prospect-validation.ts:216:31 - error TS2322: Type '"lost"' is not assignable to type 'PipelineStage'.
+
+    216     contacted: ['interested', 'lost', 'frozen'],
+                                      ~~~~~~
+    src/utils/validation/prospect-validation.ts:217:31 - error TS2322: Type '"lost"' is not assignable to type 'PipelineStage'.
+
+    217     interested: ['qualified', 'lost', 'frozen'],
+                                      ~~~~~~
+    src/utils/validation/prospect-validation.ts:218:17 - error TS2322: Type '"closed"' is not assignable to type 'PipelineStage'.
+
+    218     qualified: ['closed', 'lost', 'frozen'],
+                        ~~~~~~~~
+    src/utils/validation/prospect-validation.ts:218:27 - error TS2322: Type '"lost"' is not assignable to type 'PipelineStage'.
+
+    218     qualified: ['closed', 'lost', 'frozen'],
+                                  ~~~~~~
+</pre></div></div></div></details><details id="suite-4" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/pbarrick/Desktop/dev/MHM/components/sales-pipeline/tests/utils/obsidian/kanban-integration.test.ts</div><div class="suite-time">0s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="failureMessages suiteFailure"> <pre class="failureMsg">  ● Test suite failed to run
+
+    tests/utils/obsidian/kanban-integration.test.ts:98:13 - error TS2739: Type '{ id: string; filePath: string; created: Date; updated: Date; tags: string[]; business: { name: string; industry: "restaurants"; location: { city: string; state: string; country: string; }; size: { ...; }; digitalPresence: { ...; }; }; ... 4 more ...; obsidianMeta: { ...; }; }' is missing the following properties from type 'Prospect': dataConfidence, dataSources, overallConfidence
+
+    98       const mockProspect: Prospect = {
+                   ~~~~~~~~~~~~
+    tests/utils/obsidian/kanban-integration.test.ts:159:13 - error TS2739: Type '{ id: string; filePath: string; created: Date; updated: Date; tags: string[]; business: { name: string; industry: "retail"; location: { city: string; state: string; country: string; }; size: { ...; }; digitalPresence: { ...; }; }; ... 4 more ...; obsidianMeta: { ...; }; }' is missing the following properties from type 'Prospect': dataConfidence, dataSources, overallConfidence
+
+    159       const retailProspect: Prospect = {
+                    ~~~~~~~~~~~~~~
+    tests/utils/obsidian/kanban-integration.test.ts:200:13 - error TS2739: Type '{ id: string; filePath: string; created: Date; updated: Date; tags: string[]; business: { name: string; industry: "professional_services"; location: { city: string; state: string; country: string; }; size: { ...; }; digitalPresence: { ...; }; }; ... 4 more ...; obsidianMeta: { ...; }; }' is missing the following properties from type 'Prospect': dataConfidence, dataSources, overallConfidence
+
+    200       const highScoreProspect: Prospect = {
+                    ~~~~~~~~~~~~~~~~~
+    tests/utils/obsidian/kanban-integration.test.ts:373:9 - error TS2739: Type '{ id: string; filePath: string; created: Date; updated: Date; tags: string[]; business: { name: string; industry: "restaurants"; location: { city: string; state: string; country: string; }; size: { ...; }; digitalPresence: { ...; }; }; ... 4 more ...; obsidianMeta: { ...; }; }' is missing the following properties from type 'Prospect': dataConfidence, dataSources, overallConfidence
+
+    373         {
+                ~
+    374           id: 'prospect-1',
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ... 
+    403           obsidianMeta: { templateUsed: 'prospect-profile-template', lastSyncDate: new Date() }
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    404         }
+        ~~~~~~~~~
+</pre></div></div></div></details></main><script src="./test-assets/custom-script.js"></script></body></html>

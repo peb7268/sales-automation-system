@@ -1,0 +1,72 @@
+Hi {{lead_name}}, this is Sarah from Mile High Marketing calling for {{company}}.
+
+I've been researching {{industry}} businesses in your area and noticed {{company}} has been doing great work. I specialize in helping {{industry}} companies like yours increase their online visibility and attract more qualified customers.
+
+{{#if dm}}I was hoping to speak with {{dm}} about{{else}}I was hoping to speak with the decision maker about{{/if}} how we've helped similar {{industry}} businesses increase their revenue by 30-50% through targeted digital marketing strategies.
+
+Do you have just 2 minutes for me to share what we're doing for other {{company_type}} businesses in your market?
+
+[WAIT FOR RESPONSE]
+
+**If YES - Continue with qualification:**
+Perfect! Let me ask you a few quick questions:
+
+1. What's your biggest challenge right now when it comes to attracting new customers?
+2. Are you currently doing any digital marketing - website, social media, or online advertising?
+3. How are you primarily getting new customers right now?
+
+Based on what you're telling me, I think we could definitely help {{company}}. We've worked with {{industry}} businesses and typically see results within 60-90 days.
+
+Would it make sense to schedule a brief 15-minute call where I can show you exactly what we've done for similar businesses and see if there's a fit?
+
+**If INTERESTED:**
+Excellent! I have some time available {{next_business_day}} afternoon or {{day_after_next}} morning. What works better for you?
+
+[Schedule meeting and capture contact info]
+
+**If NOT INTERESTED:**
+I completely understand. If things change and you'd like to explore ways to grow {{company}}'s customer base, feel free to give me a call back. 
+
+Have a great day!
+
+**If OBJECTION - "Not interested":**
+I totally get that - you probably get a lot of calls like this. Let me ask you this: if I could show you a way to bring in 5-10 more qualified customers per month for {{company}}, would that be worth a 15-minute conversation?
+
+**If OBJECTION - "Too busy":**
+I completely understand how busy you must be running {{company}}. That's exactly why this might be perfect for you - our system runs on autopilot once it's set up. 
+
+How about this - what if I send you a quick 2-minute video showing the results we got for {{similar_business_example}} so you can see if it's worth a brief conversation?
+
+**If OBJECTION - "Already doing marketing":**
+That's great that you're already investing in marketing! Can I ask what's working best for you right now? 
+
+[Listen to response]
+
+What we specialize in is making sure businesses like {{company}} aren't leaving money on the table. Even if you're getting some results, we often find ways to double or triple what's already working.
+
+**If VOICEMAIL:**
+Hi {{lead_name}}, this is Sarah from Mile High Marketing calling for {{company}}. 
+
+I specialize in helping {{industry}} businesses increase their online visibility and attract more qualified customers. I've helped similar companies in your area increase their revenue by 30-50%.
+
+I'd love to share some quick wins that could help {{company}} attract more customers. Please give me a call back at {{callback_number}} or I'll try you again tomorrow. 
+
+Thanks!
+
+**QUALIFICATION SCORING:**
+- Interested in growth: +20 points
+- Has budget/decision authority: +30 points  
+- Has timeline (within 6 months): +20 points
+- Current marketing challenges: +15 points
+- Willing to schedule meeting: +40 points
+
+**TEMPERATURE SCORING:**
+- Hot (85+ points): Qualified, ready to buy
+- Warm (50-84 points): Interested, needs nurturing
+- Cold (<50 points): Not qualified, future follow-up
+
+**NEXT ACTIONS:**
+- Meeting Scheduled: Create Linear project, send calendar invite
+- Interested but no meeting: Schedule follow-up call in 1 week
+- Not interested: Mark as cold, follow-up in 6 months
+- Voicemail: Attempt #2 in 2 business days

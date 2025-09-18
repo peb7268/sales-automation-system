@@ -1,0 +1,176 @@
+{
+	"nodes":[
+		{
+			"id":"mhm-sales-system",
+			"type":"text",
+			"text":"# MHM Sales Automation System\n\n## Core Components\n- 4 AI Agents + Orchestrator\n- Obsidian-based CRM\n- Geographic prospecting\n- ROI-focused pitching\n- Multi-touch campaigns\n\n## Goals\n- $50K annual revenue\n- 10+ prospects/day\n- 15%+ response rate\n- 5%+ conversion rate",
+			"x":-280,
+			"y":-400,
+			"width":560,
+			"height":240,
+			"color":"1"
+		},
+		{
+			"id":"prospecting-agent",
+			"type":"text", 
+			"text":"## 🎯 Prospecting Agent\n\n**Responsibilities:**\n- Geographic business search\n- Lead qualification (0-100 scoring)\n- Competitor analysis\n- Data enrichment\n\n**APIs:**\n- Google Maps/Places API\n- Business directory APIs\n- Social media scraping\n\n**Output:**\n- Qualified prospect profiles\n- Obsidian prospect files",
+			"x":-600,
+			"y":-100,
+			"width":280,
+			"height":320,
+			"color":"2"
+		},
+		{
+			"id":"pitch-creator",
+			"type":"text",
+			"text":"## 💡 Pitch Creator Agent\n\n**Responsibilities:**\n- ROI-based pitch generation\n- Industry-specific messaging\n- Competitor gap analysis\n- Value proposition crafting\n\n**Inputs:**\n- Prospect qualification data\n- Competitor analysis\n- Industry benchmarks\n\n**Output:**\n- Customized pitch scripts\n- Email templates\n- Value propositions",
+			"x":-280,
+			"y":-100,
+			"width":280,
+			"height":320,
+			"color":"3"
+		},
+		{
+			"id":"voice-ai-agent",
+			"type":"text",
+			"text":"## 📞 Voice AI Agent\n\n**Responsibilities:**\n- Initial cold calls\n- Follow-up calls\n- Appointment setting\n- Call logging & analysis\n\n**Features:**\n- Natural conversation\n- Real-time objection handling\n- Appointment scheduling\n- Call transcription\n\n**Output:**\n- Call outcomes\n- Conversation summaries\n- Follow-up tasks",
+			"x":40,
+			"y":-100,
+			"width":280,
+			"height":320,
+			"color":"4"
+		},
+		{
+			"id":"email-agent",
+			"type":"text",
+			"text":"## 📧 Email Automation Agent\n\n**Responsibilities:**\n- Multi-touch email campaigns\n- Personalized sequences\n- A/B testing\n- Response tracking\n\n**Features:**\n- Dynamic personalization\n- Behavioral triggers\n- Open/click tracking\n- Auto-responses\n\n**Output:**\n- Campaign metrics\n- Response analysis\n- Lead scoring updates",
+			"x":360,
+			"y":-100,
+			"width":280,
+			"height":320,
+			"color":"5"
+		},
+		{
+			"id":"orchestrator",
+			"type":"text",
+			"text":"## 🎼 Central Orchestrator\n\n**Responsibilities:**\n- Agent coordination\n- Pipeline management\n- Task scheduling\n- Performance monitoring\n\n**Functions:**\n- Daily task assignment\n- Cross-agent communication\n- Quality control\n- Analytics & reporting\n\n**Integration:**\n- Obsidian CRM updates\n- Daily note summaries\n- Performance dashboards",
+			"x":-280,
+			"y":280,
+			"width":560,
+			"height":200,
+			"color":"6"
+		},
+		{
+			"id":"obsidian-crm",
+			"type":"text",
+			"text":"## 📋 Obsidian CRM Integration\n\n**Structure:**\n```\nProjects/Sales/\n├── Prospects/\n├── Campaigns/\n├── Activities/\n└── Sales-Dashboard.md\n```\n\n**Features:**\n- Automated prospect profiles\n- Pipeline visualization\n- Activity logging\n- Daily integration\n- Template automation",
+			"x":-600,
+			"y":280,
+			"width":280,
+			"height":280,
+			"color":"1"
+		},
+		{
+			"id":"daily-integration",
+			"type":"text",
+			"text":"## 📅 Daily Note Integration\n\n**Location:**\n`Resources/Agenda/Daily/YYYY-MM-DD.md`\n\n**Auto-Updates:**\n- Sales activity summary\n- Goal progress tracking\n- Follow-up reminders\n- Performance metrics\n\n**Dashboard Widgets:**\n- Hot prospects\n- Today's activities\n- Pipeline summary\n- Quick actions",
+			"x":360,
+			"y":280,
+			"width":280,
+			"height":280,
+			"color":"1"
+		},
+		{
+			"id":"workflow-pipeline",
+			"type":"text",
+			"text":"## 🔄 Sales Pipeline Workflow\n\n**Stages:**\n1. 🧊 Cold → Initial identification\n2. 📞 Contacted → First outreach\n3. 💬 Interested → Engaged prospect\n4. ✅ Qualified → Meeting scheduled\n5. 💰 Closed → Deal won\n6. ❌ Lost → Deal lost\n7. 🧊 Frozen → On hold\n\n**Automation Rules:**\n- Auto-advance on positive response\n- Score updates trigger actions\n- Follow-up scheduling\n- Pipeline reporting",
+			"x":-280,
+			"y":540,
+			"width":560,
+			"height":200,
+			"color":"2"
+		}
+	],
+	"edges":[
+		{
+			"id":"prospecting-to-orchestrator",
+			"fromNode":"prospecting-agent",
+			"fromSide":"bottom",
+			"toNode":"orchestrator",
+			"toSide":"left",
+			"label":"Qualified Prospects"
+		},
+		{
+			"id":"pitch-creator-to-orchestrator", 
+			"fromNode":"pitch-creator",
+			"fromSide":"bottom",
+			"toNode":"orchestrator",
+			"toSide":"top",
+			"label":"Custom Pitches"
+		},
+		{
+			"id":"voice-ai-to-orchestrator",
+			"fromNode":"voice-ai-agent",
+			"fromSide":"bottom",
+			"toNode":"orchestrator", 
+			"toSide":"top",
+			"label":"Call Outcomes"
+		},
+		{
+			"id":"email-agent-to-orchestrator",
+			"fromNode":"email-agent",
+			"fromSide":"bottom",
+			"toNode":"orchestrator",
+			"toSide":"right",
+			"label":"Campaign Results"
+		},
+		{
+			"id":"orchestrator-to-obsidian",
+			"fromNode":"orchestrator",
+			"fromSide":"left",
+			"toNode":"obsidian-crm",
+			"toSide":"right",
+			"label":"CRM Updates"
+		},
+		{
+			"id":"orchestrator-to-daily",
+			"fromNode":"orchestrator",
+			"fromSide":"right", 
+			"toNode":"daily-integration",
+			"toSide":"left",
+			"label":"Daily Summaries"
+		},
+		{
+			"id":"orchestrator-to-pipeline",
+			"fromNode":"orchestrator",
+			"fromSide":"bottom",
+			"toNode":"workflow-pipeline",
+			"toSide":"top",
+			"label":"Pipeline Management"
+		},
+		{
+			"id":"prospecting-to-pitch",
+			"fromNode":"prospecting-agent",
+			"fromSide":"right",
+			"toNode":"pitch-creator",
+			"toSide":"left",
+			"label":"Prospect Data"
+		},
+		{
+			"id":"pitch-to-voice",
+			"fromNode":"pitch-creator",
+			"fromSide":"right",
+			"toNode":"voice-ai-agent",
+			"toSide":"left",
+			"label":"Call Scripts"
+		},
+		{
+			"id":"pitch-to-email",
+			"fromNode":"pitch-creator",
+			"fromSide":"right",
+			"toNode":"email-agent",
+			"toSide":"left",
+			"label":"Email Templates"
+		}
+	]
+}

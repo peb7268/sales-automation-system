@@ -1,0 +1,51 @@
+{
+  "name": "automated-sales-caller",
+  "version": "1.0.0",
+  "description": "AI-powered automated calling system for Mile High Marketing prospect outreach",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "setup:sheets": "node scripts/setup-sheets.js",
+    "test:sheets": "node scripts/test-sheets.js",
+    "test:vapi": "node scripts/test-vapi.js",
+    "test:twilio": "node scripts/test-twilio.js",
+    "test:integration": "node scripts/test-integration.js"
+  },
+  "keywords": [
+    "sales-automation",
+    "vapi-ai",
+    "twilio",
+    "make-automation",
+    "lead-qualification"
+  ],
+  "author": "Mile High Marketing",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "googleapis": "^126.0.1",
+    "moment": "^2.29.4",
+    "twilio": "^4.19.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milehighmarketing/automated-sales-caller.git"
+  },
+  "bugs": {
+    "url": "https://github.com/milehighmarketing/automated-sales-caller/issues"
+  },
+  "homepage": "https://github.com/milehighmarketing/automated-sales-caller#readme"
+}

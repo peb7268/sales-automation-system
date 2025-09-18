@@ -1,0 +1,101 @@
+{
+  "version": "1.0.0",
+  "description": "Centralized scheduling configuration for all automated tasks",
+  "last_updated": "2025-07-31T16:45:00.000Z",
+  "timezone": "America/Denver",
+
+  "cron_schedules": {
+    "business_hours": {
+      "start": "09:00",
+      "end": "17:00",
+      "days": ["MON", "TUE", "WED", "THU", "FRI"]
+    },
+    "daily_tasks": {
+      "morning_prospect_generation": "0 9 * * 1-5",
+      "midday_analytics_update": "0 14 * * *",
+      "evening_reporting": "0 20 * * *"
+    },
+    "hourly_tasks": {
+      "pipeline_monitoring": "0 * * * *",
+      "stage_transition_check": "0 */6 * * *"
+    },
+    "weekly_tasks": {
+      "performance_reporting": "0 9 * * 1",
+      "data_backup": "0 2 * * 0"
+    },
+    "monthly_tasks": {
+      "data_cleanup": "0 2 1 * *",
+      "system_maintenance": "0 3 1 * *"
+    }
+  },
+
+  "execution_windows": {
+    "prospecting": {
+      "allowed_hours": [9, 10, 11, 14, 15, 16],
+      "max_concurrent": 3,
+      "cooldown_minutes": 30
+    },
+    "outreach": {
+      "allowed_hours": [10, 11, 14, 15, 16],
+      "max_concurrent": 5,
+      "respect_time_zones": true
+    },
+    "analytics": {
+      "allowed_hours": "all",
+      "max_concurrent": 2,
+      "priority": "low"
+    },
+    "maintenance": {
+      "allowed_hours": [2, 3, 4, 5],
+      "max_concurrent": 1,
+      "priority": "high"
+    }
+  },
+
+  "retry_policies": {
+    "default": {
+      "max_attempts": 3,
+      "backoff_strategy": "exponential",
+      "initial_delay_seconds": 60,
+      "max_delay_seconds": 3600
+    },
+    "critical_tasks": {
+      "max_attempts": 5,
+      "backoff_strategy": "exponential",
+      "initial_delay_seconds": 30,
+      "max_delay_seconds": 1800,
+      "alert_on_failure": true
+    },
+    "non_critical_tasks": {
+      "max_attempts": 2,
+      "backoff_strategy": "linear",
+      "initial_delay_seconds": 300,
+      "max_delay_seconds": 1800,
+      "alert_on_failure": false
+    }
+  },
+
+  "task_priorities": {
+    "high": ["stage_transition_automation", "stagnant_prospect_identification", "kanban_sync"],
+    "medium": ["daily_prospect_generation", "pitch_generation", "daily_analytics_update"],
+    "low": ["performance_reporting", "data_cleanup", "system_maintenance"]
+  },
+
+  "resource_limits": {
+    "max_concurrent_tasks": 10,
+    "max_memory_mb": 512,
+    "max_cpu_percent": 50,
+    "max_disk_io_mb": 100
+  },
+
+  "monitoring": {
+    "health_check_interval": 300,
+    "log_level": "info",
+    "metrics_retention_days": 30,
+    "alert_thresholds": {
+      "task_failure_rate": 0.1,
+      "average_execution_time_seconds": 300,
+      "memory_usage_percent": 75
+    }
+  }
+}

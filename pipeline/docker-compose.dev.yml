@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  sales-automation-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: agentic-sales-team-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debugging port
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - LOG_LEVEL=debug
+    env_file:
+      - ../.env
+    volumes:
+      # Mount source code for hot reload
+      - .:/app:rw
+      - /app/node_modules
+      # Mount Obsidian vault
+      - ${OBSIDIAN_VAULT_PATH}:/app/obsidian-vault:rw
+      # Mount logs directory
+      - ./logs:/app/logs:rw
+      # Mount data directory
+      - ./data:/app/data:rw
+    networks:
+      - sales-dev-network
+    depends_on:
+      - redis-dev
+    command: ["npm", "run", "dev"]
+
+  redis-dev:
+    image: redis:7-alpine
+    container_name: sales-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6380:6379"  # Different port for dev
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - sales-dev-network
+    command: redis-server --appendonly yes
+
+  # Development database
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: sales-postgres-dev
+    restart: unless-stopped
+    ports:
+      - "5433:5432"  # Different port for dev
+    environment:
+      - POSTGRES_DB=sales_automation_dev
+      - POSTGRES_USER=sales_dev_user
+      - POSTGRES_PASSWORD=devpassword
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - sales-dev-network
+
+  # Development tools
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sales-pgadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - sales-dev-network
+    depends_on:
+      - postgres-dev
+
+networks:
+  sales-dev-network:
+    driver: bridge
+    name: sales-automation-dev-network
+
+volumes:
+  redis_dev_data:
+    name: sales-redis-dev-data
+  postgres_dev_data:
+    name: sales-postgres-dev-data
+  pgadmin_data:
+    name: sales-pgadmin-data

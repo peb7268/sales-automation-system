@@ -1,0 +1,186 @@
+{
+  "app": {
+    "name": "Automated Agentic Sales Team",
+    "version": "1.0.0",
+    "environment": "development",
+    "port": 3000
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "destinations": {
+      "console": true,
+      "file": {
+        "enabled": true,
+        "path": "./logs/system/app.log",
+        "maxSize": "10MB",
+        "maxFiles": 5
+      }
+    }
+  },
+  "agents": {
+    "prospecting": {
+      "enabled": true,
+      "maxProspectsPerDay": 100,
+      "qualificationThreshold": 50,
+      "geographic": {
+        "defaultRadius": 25,
+        "maxRadius": 100,
+        "units": "miles"
+      },
+      "dataSources": {
+        "googleMaps": {
+          "enabled": true,
+          "rateLimit": 1000
+        },
+        "yellowPages": {
+          "enabled": true,
+          "rateLimit": 500
+        },
+        "firecrawl": {
+          "enabled": true,
+          "rateLimit": 100
+        },
+        "perplexity": {
+          "enabled": true,
+          "rateLimit": 50
+        }
+      }
+    },
+    "pitchCreator": {
+      "enabled": true,
+      "templates": {
+        "timeBoxed": {
+          "hook": 30,
+          "valueProp": 60,
+          "closing": 120
+        }
+      },
+      "abTesting": {
+        "enabled": true,
+        "minSampleSize": 20
+      }
+    },
+    "voiceAI": {
+      "enabled": true,
+      "tiers": {
+        "lowCost": {
+          "maxDealValue": 15000,
+          "provider": "basic"
+        },
+        "premium": {
+          "minDealValue": 15000,
+          "provider": "advanced"
+        }
+      },
+      "maxConcurrentCalls": 5
+    },
+    "emailAutomation": {
+      "enabled": true,
+      "provider": "sendgrid",
+      "rateLimit": {
+        "perHour": 50,
+        "perDay": 500
+      },
+      "sequences": {
+        "coldOutreach": {
+          "enabled": true,
+          "maxTouches": 5
+        },
+        "followUp": {
+          "enabled": true,
+          "maxTouches": 3
+        }
+      }
+    },
+    "orchestrator": {
+      "enabled": true,
+      "pipelineStages": [
+        "cold",
+        "contacted",
+        "interested",
+        "qualified",
+        "closed",
+        "lost",
+        "frozen"
+      ],
+      "buyingSignals": {
+        "enabled": true,
+        "threshold": 70
+      }
+    }
+  },
+  "obsidian": {
+    "integration": {
+      "enabled": true,
+      "autoSync": true,
+      "syncInterval": 300000
+    },
+    "templates": {
+      "prospectProfile": "obsidian/templates/prospect-profile",
+      "campaign": "obsidian/templates/campaign",
+      "activity": "obsidian/templates/activity"
+    },
+    "plugins": {
+      "kanban": {
+        "enabled": true,
+        "boardName": "Sales Pipeline"
+      },
+      "charts": {
+        "enabled": true,
+        "autoRefresh": true,
+        "refreshInterval": 3600000
+      }
+    }
+  },
+  "integrations": {
+    "freshbooks": {
+      "enabled": false,
+      "autoInvoicing": false
+    },
+    "linear": {
+      "enabled": false,
+      "autoProjectCreation": false
+    }
+  },
+  "analytics": {
+    "dashboard": {
+      "enabled": true,
+      "refreshInterval": 3600000
+    },
+    "metrics": {
+      "trackConversions": true,
+      "trackROI": true,
+      "trackQualificationScores": true
+    },
+    "targets": {
+      "yearOne": {
+        "revenue": 50000,
+        "prospects": 3650,
+        "qualified": 365,
+        "closed": 36
+      }
+    }
+  },
+  "compliance": {
+    "tcpa": {
+      "enabled": true,
+      "optOutEnabled": true,
+      "consentRequired": true
+    },
+    "canSpam": {
+      "enabled": true,
+      "unsubscribeEnabled": true,
+      "companyInfo": {
+        "name": "Mile High Marketing",
+        "address": "Your Company Address",
+        "phone": "Your Company Phone"
+      }
+    },
+    "dataRetention": {
+      "prospectHistory": 2555,
+      "interactionHistory": 2555,
+      "analyticsData": 1095
+    }
+  }
+}
