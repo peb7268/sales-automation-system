@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js - Force-Directed Graph</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .links line { stroke: #999; stroke-opacity: 0.6; }
+        .nodes circle { stroke: #fff; stroke-width: 1.5px; cursor: pointer; }
+        .nodes text { font-size: 10px; pointer-events: none; }
+        .tooltip { position: absolute; padding: 10px; background: rgba(0, 0, 0, 0.8); color: white; border-radius: 4px; pointer-events: none; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>D3.js - Force-Directed Network Graph</h1>
+        <div id="chart"></div>
+    </div>
+    <div class="tooltip"></div>
+    <script>
+        const width = 960, height = 600;
+        const svg = d3.select('#chart').append('svg').attr('width', width).attr('height', height);
+
+        // Sample network data
+        const nodes = [
+            { id: "Hub", group: 1, value: 30 },
+            { id: "Node1", group: 2, value: 20 },
+            { id: "Node2", group: 2, value: 20 },
+            { id: "Node3", group: 3, value: 15 },
+            { id: "Node4", group: 3, value: 15 },
+            { id: "Node5", group: 4, value: 10 },
+            { id: "Node6", group: 4, value: 10 },
+            { id: "Node7", group: 5, value: 8 },
+            { id: "Node8", group: 5, value: 8 }
+        ];
+
+        const links = [
+            { source: "Hub", target: "Node1", value: 4 },
+            { source: "Hub", target: "Node2", value: 4 },
+            { source: "Hub", target: "Node3", value: 3 },
+            { source: "Hub", target: "Node4", value: 3 },
+            { source: "Node1", target: "Node5", value: 2 },
+            { source: "Node2", target: "Node6", value: 2 },
+            { source: "Node3", target: "Node7", value: 1 },
+            { source: "Node4", target: "Node8", value: 1 },
+            { source: "Node5", target: "Node6", value: 1 },
+            { source: "Node7", target: "Node8", value: 1 }
+        ];
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.value + 5));
+
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        const tooltip = d3.select('.tooltip');
+
+        const link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("stroke-width", d => Math.sqrt(d.value));
+
+        const node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => d.value)
+            .attr("fill", d => color(d.group))
+            .on("mouseover", function(event, d) {
+                tooltip.style('opacity', 1).html(`${d.id}<br/>Value: ${d.value}`);
+            })
+            .on("mousemove", function(event) {
+                tooltip.style('left', (event.pageX + 10) + 'px').style('top', (event.pageY - 10) + 'px');
+            })
+            .on("mouseout", function() { tooltip.style('opacity', 0); });
+
+        node.append("text")
+            .text(d => d.id)
+            .attr('x', d => d.value + 5)
+            .attr('y', 3);
+
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>
+</html>

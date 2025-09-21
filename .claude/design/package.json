@@ -1,0 +1,41 @@
+{
+  "name": "chart-design-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chart Design System Storybook",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["charts", "visualization", "storybook"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.0",
+    "@storybook/addon-interactions": "^7.6.0",
+    "@storybook/addon-links": "^7.6.0",
+    "@storybook/blocks": "^7.6.0",
+    "@storybook/react": "^7.6.0",
+    "@storybook/react-webpack5": "^7.6.0",
+    "@storybook/testing-library": "^0.2.0",
+    "@types/react": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.6.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "recharts": "^2.5.0",
+    "d3": "^7.8.0",
+    "plotly.js": "^2.26.0",
+    "react-plotly.js": "^2.6.0",
+    "three": "^0.150.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/drei": "^9.88.0",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    "apexcharts": "^4.0.0",
+    "react-apexcharts": "^1.7.0"
+  }
+}

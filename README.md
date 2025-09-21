@@ -10,12 +10,88 @@ The MHM Sales Automation System automates the complete B2B sales process from pr
 
 ```
 projects/sales/
+├── dashboard/             # Sales analytics & monitoring dashboard
 ├── pipeline/              # Prospect research & data management
-├── caller/                # AI voice calling system  
+├── caller/                # AI voice calling system
 ├── clients/              # CRM data repository
 ├── bin/                  # Automation scripts
+├── docker/                # Infrastructure & admin tools
 └── integrations/         # External service connectors
 ```
+
+## 🛠️ Technology Stack
+
+### Core Application
+- **Frontend Framework**: Next.js 14 with App Router
+- **Programming Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Data Visualization**: Recharts, D3.js
+- **Authentication**: NextAuth.js with Google OAuth
+
+### Data Infrastructure
+- **Primary Database**: PostgreSQL 15.1 (Supabase Postgres)
+- **Caching**: Redis 7.2
+- **Message Queue**: Apache Kafka with Zookeeper
+- **Real-time**: WebSocket Server (Node.js)
+
+### Voice & AI Services
+- **Voice AI Platform**: Vapi AI
+- **Telephony**: Twilio
+- **Workflow Automation**: Make.com
+- **AI Models**: GPT-4, Claude Sonnet
+
+### DevOps & Infrastructure
+- **Containerization**: Docker & Docker Compose
+- **Process Management**: PM2
+- **Testing**: Cypress, Playwright
+- **Version Control**: Git
+
+## 🖥️ Admin UI Tools
+
+### pgAdmin 4 - Database Management
+**Access URL**: http://localhost:5050
+
+**Login Credentials**:
+- Email: `admin@milehighmarketing.com`
+- Password: `admin`
+
+**Features**:
+- Visual database browsing and management
+- SQL query editor with syntax highlighting
+- Table data viewing and editing
+- Database performance monitoring
+- Backup and restore capabilities
+
+**Connecting to Sales Dashboard DB**:
+1. Open pgAdmin at http://localhost:5050
+2. Login with credentials above
+3. Right-click "Servers" → "Create" → "Server"
+4. General tab: Name = "Sales Dashboard"
+5. Connection tab:
+   - Host: `postgres` (Docker network name)
+   - Port: `5432`
+   - Database: `sales_dashboard`
+   - Username: `postgres`
+   - Password: `postgres`
+
+### Kafdrop - Kafka Monitoring
+**Access URL**: http://localhost:9000
+
+**Login**: No authentication required
+
+**Features**:
+- Real-time Kafka cluster overview
+- Topic browsing and message inspection
+- Consumer group monitoring
+- Partition distribution visualization
+- Message search and filtering
+
+**Key Monitoring Areas**:
+- **Topics**: View all Kafka topics and their configurations
+- **Messages**: Inspect individual messages in topics
+- **Consumer Groups**: Monitor consumer lag and performance
+- **Brokers**: Check broker health and statistics
 
 ### Data Flow
 
@@ -86,6 +162,7 @@ Follow this guide sequentially to understand and set up the entire system.
 
 ### Prerequisites Check
 - [ ] Node.js 18+ installed
+- [ ] Docker Desktop installed and running
 - [ ] Google account with Sheets/Drive access
 - [ ] Basic understanding of API keys
 - [ ] 30 minutes for initial setup
@@ -96,6 +173,7 @@ Follow this guide sequentially to understand and set up the entire system.
 cd /Users/pbarrick/Desktop/dev/MHM/projects/sales
 
 # Install dependencies
+cd dashboard && npm install && cd ..
 cd pipeline && npm install && cd ..
 cd caller && npm install && cd ..
 
@@ -103,7 +181,25 @@ cd caller && npm install && cd ..
 cp environment.env .env
 ```
 
-### Step 2: Configure Core Services (15 minutes)
+### Step 2: Start Infrastructure (5 minutes)
+```bash
+# Start all Docker services
+cd docker
+docker compose up -d
+
+# Verify services are running
+docker compose ps
+
+# Services available at:
+# - Dashboard: http://localhost:3000
+# - pgAdmin: http://localhost:5050
+# - Kafdrop: http://localhost:9000
+# - PostgreSQL: localhost:5432
+# - Redis: localhost:6379
+# - Kafka: localhost:9092
+```
+
+### Step 3: Configure Core Services (10 minutes)
 
 #### Required API Keys:
 ```bash
@@ -127,7 +223,7 @@ MAKECOM_API_KEY="your_makecom_key"
 - **Make.com**: [Sign up at make.com](https://make.com) → Account → API Keys  
 - **Google APIs**: [Google Cloud Console](https://console.cloud.google.com) → Enable APIs
 
-### Step 3: Test System Health (5 minutes)
+### Step 4: Test System Health (5 minutes)
 ```bash
 # Test all API connections
 ./test_webhook.sh your_makecom_api_key
@@ -139,7 +235,7 @@ curl "https://docs.google.com/spreadsheets/d/1DQWtvs4DDWbkVal8LdzGruqfXunpqhQqKe
 curl -H "Authorization: Bearer $VAPI_API_KEY" https://api.vapi.ai/account
 ```
 
-### Step 4: First Test Call (5 minutes)
+### Step 5: First Test Call (5 minutes)
 ```bash
 # Use test data to verify end-to-end workflow
 cd caller/docs/makecom
@@ -282,7 +378,75 @@ npm run test:vapi           # Test voice system
 - **Google Drive**: https://drive.google.com/drive/folders/1EJxKtbp65kWMLmXF-nfYURd44H-dtCQS
 - **Webhook URL**: https://hook.us2.make.com/gugssi64ofbr3vgny705qg2tdsvrgjlx
 
+## 🐳 Docker Infrastructure Management
+
+### Starting the Stack
+```bash
+cd docker
+docker compose up -d        # Start all services in background
+docker compose logs -f      # View live logs
+docker compose ps           # Check service status
+```
+
+### Stopping Services
+```bash
+docker compose down         # Stop all services
+docker compose down -v      # Stop and remove volumes (WARNING: deletes data)
+```
+
+### Individual Service Management
+```bash
+# Restart specific service
+docker compose restart dashboard
+docker compose restart postgres
+docker compose restart kafka
+
+# View logs for specific service
+docker compose logs -f dashboard
+docker compose logs -f postgres
+```
+
+### Database Operations
+```bash
+# Connect to PostgreSQL directly
+docker exec -it docker-postgres-1 psql -U postgres -d sales_dashboard
+
+# Run database migrations
+cd dashboard
+npm run db:migrate
+
+# Test database connection
+node scripts/test-db-connection.js
+```
+
 ## 🆘 Troubleshooting Quick Reference
+
+### Docker & Infrastructure Issues
+```bash
+# Docker not running
+open -a "Docker"  # macOS
+# Wait for Docker to fully start, then retry
+
+# Port already in use
+lsof -i :3000    # Check what's using port 3000
+lsof -i :5432    # Check PostgreSQL port
+kill -9 <PID>    # Kill process using the port
+
+# Container won't start
+docker compose logs <service-name>  # Check error logs
+docker compose down && docker compose up -d  # Full restart
+```
+
+### Database Connection Issues
+```bash
+# Test PostgreSQL connection
+docker exec -it docker-postgres-1 pg_isready
+
+# Reset database
+docker compose down -v  # WARNING: Deletes all data
+docker compose up -d
+cd dashboard && npm run db:migrate
+```
 
 ### API Connection Issues
 ```bash
@@ -293,9 +457,11 @@ curl -H "Authorization: Bearer $VAPI_API_KEY" https://api.vapi.ai/account
 
 ### Common Problems
 1. **Webhook 401 Error**: Check x-make-apikey header in Make.com
-2. **Vapi Call Fails**: Verify API key and phone number ID  
+2. **Vapi Call Fails**: Verify API key and phone number ID
 3. **Google Sheets Access**: Confirm sharing permissions
 4. **Make.com Not Triggering**: Check "Uncontacted" filter exact match
+5. **pgAdmin Can't Connect**: Use `postgres` as host (Docker network name), not `localhost`
+6. **Kafka Not Available**: Ensure Zookeeper is running first with `docker compose ps`
 
 ### Support Resources
 - **Make.com Docs**: https://www.make.com/en/help

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCharts - Candlestick Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ApexCharts - Candlestick & OHLC Examples</h1>
+        <div id="candlestick" class="chart"></div>
+        <div id="boxplot" class="chart"></div>
+    </div>
+    <script>
+        // Generate OHLC data
+        function generateOHLC() {
+            const data = [];
+            let basePrice = 100;
+            const startDate = new Date('2024-01-01').getTime();
+
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(startDate + i * 24 * 60 * 60 * 1000);
+                const open = basePrice + Math.random() * 10 - 5;
+                const close = open + Math.random() * 10 - 5;
+                const high = Math.max(open, close) + Math.random() * 5;
+                const low = Math.min(open, close) - Math.random() * 5;
+
+                data.push({
+                    x: date,
+                    y: [open.toFixed(2), high.toFixed(2), low.toFixed(2), close.toFixed(2)]
+                });
+
+                basePrice = close;
+            }
+            return data;
+        }
+
+        // Candlestick Chart
+        const candlestickOptions = {
+            series: [{ data: generateOHLC() }],
+            chart: {
+                type: 'candlestick',
+                height: 350
+            },
+            title: {
+                text: 'Price Movement Analysis',
+                align: 'left'
+            },
+            xaxis: {
+                type: 'datetime'
+            },
+            yaxis: {
+                tooltip: { enabled: true }
+            },
+            plotOptions: {
+                candlestick: {
+                    colors: {
+                        upward: '#00E396',
+                        downward: '#FF4560'
+                    }
+                }
+            }
+        };
+        new ApexCharts(document.querySelector("#candlestick"), candlestickOptions).render();
+
+        // Box Plot Chart
+        const boxPlotOptions = {
+            series: [
+                {
+                    name: 'Q1',
+                    type: 'boxPlot',
+                    data: [
+                        { x: 'Team A', y: [54, 66, 69, 75, 88] },
+                        { x: 'Team B', y: [43, 65, 69, 76, 81] },
+                        { x: 'Team C', y: [31, 39, 45, 51, 59] },
+                        { x: 'Team D', y: [39, 46, 55, 65, 71] }
+                    ]
+                },
+                {
+                    name: 'Q2',
+                    type: 'boxPlot',
+                    data: [
+                        { x: 'Team A', y: [55, 70, 73, 78, 90] },
+                        { x: 'Team B', y: [45, 68, 72, 79, 85] },
+                        { x: 'Team C', y: [35, 42, 48, 55, 62] },
+                        { x: 'Team D', y: [42, 50, 58, 68, 75] }
+                    ]
+                }
+            ],
+            chart: {
+                type: 'boxPlot',
+                height: 350
+            },
+            title: {
+                text: 'Team Performance Distribution',
+                align: 'left'
+            },
+            plotOptions: {
+                boxPlot: {
+                    colors: {
+                        upper: '#00E396',
+                        lower: '#008FFB'
+                    }
+                }
+            },
+            xaxis: { type: 'category' }
+        };
+        new ApexCharts(document.querySelector("#boxplot"), boxPlotOptions).render();
+    </script>
+</body>
+</html>

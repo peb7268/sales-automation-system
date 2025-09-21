@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js - Bubble & Scatter Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart-container { position: relative; height: 400px; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chart.js - Bubble & Scatter Chart Examples</h1>
+        <div class="chart-container">
+            <canvas id="bubble"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="scatter"></canvas>
+        </div>
+    </div>
+    <script>
+        // Bubble Chart
+        const ctx1 = document.getElementById('bubble').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Product Performance',
+                    data: [
+                        { x: 20, y: 30, r: 15 },
+                        { x: 40, y: 10, r: 10 },
+                        { x: 30, y: 50, r: 25 },
+                        { x: 50, y: 40, r: 20 },
+                        { x: 35, y: 25, r: 18 },
+                        { x: 25, y: 35, r: 12 },
+                        { x: 45, y: 45, r: 22 }
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }, {
+                    label: 'Competitor Products',
+                    data: [
+                        { x: 15, y: 25, r: 8 },
+                        { x: 35, y: 15, r: 12 },
+                        { x: 25, y: 40, r: 15 },
+                        { x: 42, y: 35, r: 18 }
+                    ],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Product Market Analysis (x: Price, y: Quality, size: Market Share)'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Price Point'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Quality Score'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Scatter Chart
+        const ctx2 = document.getElementById('scatter').getContext('2d');
+
+        // Generate sample data
+        const generateData = (count, offset) => {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                data.push({
+                    x: Math.random() * 100,
+                    y: Math.random() * 50 + offset
+                });
+            }
+            return data;
+        };
+
+        new Chart(ctx2, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Cluster A',
+                    data: generateData(30, 0),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                }, {
+                    label: 'Cluster B',
+                    data: generateData(30, 25),
+                    backgroundColor: 'rgba(255, 206, 86, 0.6)'
+                }, {
+                    label: 'Cluster C',
+                    data: generateData(30, 50),
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Customer Segmentation Analysis'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Engagement Score'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Purchase Frequency'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

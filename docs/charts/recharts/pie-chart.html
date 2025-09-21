@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharts - Pie Chart Example</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recharts - Pie & Donut Chart Examples</h1>
+        <div class="charts-grid">
+            <div id="chart1"></div>
+            <div id="chart2"></div>
+            <div id="chart3"></div>
+            <div id="chart4"></div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } = Recharts;
+
+        // Sample data
+        const marketShare = [
+            { name: 'Chrome', value: 61.41, color: '#0088FE' },
+            { name: 'Safari', value: 15.89, color: '#00C49F' },
+            { name: 'Firefox', value: 4.65, color: '#FFBB28' },
+            { name: 'Edge', value: 4.15, color: '#FF8042' },
+            { name: 'Others', value: 13.9, color: '#8884D8' }
+        ];
+
+        const salesByRegion = [
+            { name: 'North America', value: 35000 },
+            { name: 'Europe', value: 28000 },
+            { name: 'Asia Pacific', value: 42000 },
+            { name: 'Latin America', value: 15000 },
+            { name: 'Africa', value: 8000 }
+        ];
+
+        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+
+        // Custom label function
+        const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+            const RADIAN = Math.PI / 180;
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+                <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                    {`${(percent * 100).toFixed(0)}%`}
+                </text>
+            );
+        };
+
+        // Simple Pie Chart
+        const SimplePieChart = () => {
+            return (
+                <div>
+                    <h3>Browser Market Share</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie
+                                data={marketShare}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                label={renderCustomizedLabel}
+                                outerRadius={100}
+                                fill="#8884d8"
+                                dataKey="value"
+                            >
+                                {marketShare.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Donut Chart
+        const DonutChart = () => {
+            return (
+                <div>
+                    <h3>Sales by Region (Donut)</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie
+                                data={salesByRegion}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={100}
+                                fill="#8884d8"
+                                paddingAngle={5}
+                                dataKey="value"
+                            >
+                                {salesByRegion.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Interactive Pie Chart with Active Shape
+        const renderActiveShape = (props) => {
+            const RADIAN = Math.PI / 180;
+            const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+            const sin = Math.sin(-RADIAN * midAngle);
+            const cos = Math.cos(-RADIAN * midAngle);
+            const sx = cx + (outerRadius + 10) * cos;
+            const sy = cy + (outerRadius + 10) * sin;
+            const mx = cx + (outerRadius + 30) * cos;
+            const my = cy + (outerRadius + 30) * sin;
+            const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+            const ey = my;
+            const textAnchor = cos >= 0 ? 'start' : 'end';
+
+            return (
+                <g>
+                    <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+                        {payload.name}
+                    </text>
+                    <Sector
+                        cx={cx}
+                        cy={cy}
+                        innerRadius={innerRadius}
+                        outerRadius={outerRadius}
+                        startAngle={startAngle}
+                        endAngle={endAngle}
+                        fill={fill}
+                    />
+                    <Sector
+                        cx={cx}
+                        cy={cy}
+                        startAngle={startAngle}
+                        endAngle={endAngle}
+                        innerRadius={outerRadius + 6}
+                        outerRadius={outerRadius + 10}
+                        fill={fill}
+                    />
+                    <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+                    <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+                    <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`Value: ${value}`}</text>
+                    <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                        {`(${(percent * 100).toFixed(2)}%)`}
+                    </text>
+                </g>
+            );
+        };
+
+        const InteractivePieChart = () => {
+            const [activeIndex, setActiveIndex] = React.useState(0);
+
+            const onPieEnter = (_, index) => {
+                setActiveIndex(index);
+            };
+
+            return (
+                <div>
+                    <h3>Interactive Market Analysis</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie
+                                activeIndex={activeIndex}
+                                activeShape={renderActiveShape}
+                                data={marketShare}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={80}
+                                fill="#8884d8"
+                                dataKey="value"
+                                onMouseEnter={onPieEnter}
+                            >
+                                {marketShare.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Nested Donut Chart
+        const NestedDonutChart = () => {
+            const data01 = [
+                { name: 'Group A', value: 400 },
+                { name: 'Group B', value: 300 },
+                { name: 'Group C', value: 300 },
+                { name: 'Group D', value: 200 }
+            ];
+
+            const data02 = [
+                { name: 'A1', value: 100 },
+                { name: 'A2', value: 300 },
+                { name: 'B1', value: 100 },
+                { name: 'B2', value: 80 },
+                { name: 'B3', value: 40 },
+                { name: 'B4', value: 30 },
+                { name: 'B5', value: 50 },
+                { name: 'C1', value: 100 },
+                { name: 'C2', value: 200 },
+                { name: 'D1', value: 150 },
+                { name: 'D2', value: 50 }
+            ];
+
+            return (
+                <div>
+                    <h3>Nested Categories</h3>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie data={data01} dataKey="value" cx="50%" cy="50%" outerRadius={60} fill="#8884d8">
+                                {data01.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Pie data={data02} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90} fill="#82ca9d">
+                                {data02.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Render charts
+        ReactDOM.render(<SimplePieChart />, document.getElementById('chart1'));
+        ReactDOM.render(<DonutChart />, document.getElementById('chart2'));
+        ReactDOM.render(<InteractivePieChart />, document.getElementById('chart3'));
+        ReactDOM.render(<NestedDonutChart />, document.getElementById('chart4'));
+    </script>
+</body>
+</html>

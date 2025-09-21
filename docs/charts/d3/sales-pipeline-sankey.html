@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Pipeline - Sankey Flow Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .metric {
+            text-align: center;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            min-width: 150px;
+            margin: 10px;
+        }
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .metric-label {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        #chart {
+            margin: 30px 0;
+        }
+        .link {
+            fill: none;
+            stroke-opacity: 0.4;
+            transition: stroke-opacity 0.3s;
+        }
+        .link:hover {
+            stroke-opacity: 0.7;
+        }
+        .node rect {
+            cursor: pointer;
+            fill-opacity: .95;
+            shape-rendering: crispEdges;
+            transition: fill-opacity 0.3s;
+        }
+        .node rect:hover {
+            fill-opacity: 1;
+        }
+        .node text {
+            pointer-events: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .stage-labels {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 0 40px;
+        }
+        .stage-label {
+            text-align: center;
+            flex: 1;
+        }
+        .stage-label h3 {
+            color: #4a5568;
+            margin: 5px 0;
+        }
+        .stage-label p {
+            color: #718096;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Pipeline Flow Analysis</h1>
+        <p class="subtitle">Real-time visualization of lead progression through your sales funnel</p>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">1,500</div>
+                <div class="metric-label">Total Leads</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">68%</div>
+                <div class="metric-label">Qualification Rate</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">42%</div>
+                <div class="metric-label">Win Rate</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$2.4M</div>
+                <div class="metric-label">Pipeline Value</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">23d</div>
+                <div class="metric-label">Avg. Sales Cycle</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="updateData('current')">Current Quarter</button>
+            <button class="btn" onclick="updateData('previous')">Previous Quarter</button>
+            <button class="btn" onclick="updateData('year')">Full Year</button>
+        </div>
+
+        <div id="chart"></div>
+
+        <div class="stage-labels">
+            <div class="stage-label">
+                <h3>Lead Generation</h3>
+                <p>Initial contact & interest</p>
+            </div>
+            <div class="stage-label">
+                <h3>Qualification</h3>
+                <p>BANT assessment</p>
+            </div>
+            <div class="stage-label">
+                <h3>Opportunity</h3>
+                <p>Active engagement</p>
+            </div>
+            <div class="stage-label">
+                <h3>Negotiation</h3>
+                <p>Terms & pricing</p>
+            </div>
+            <div class="stage-label">
+                <h3>Closure</h3>
+                <p>Final decision</p>
+            </div>
+        </div>
+    </div>
+    <div class="tooltip"></div>
+
+    <script>
+        const width = 1320;
+        const height = 600;
+        const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+
+        // Color palette
+        const colors = {
+            "New Leads": "#3182ce",
+            "MQL": "#805ad5",
+            "SQL": "#d69e2e",
+            "Opportunity": "#38a169",
+            "Proposal": "#e53e3e",
+            "Negotiation": "#dd6b20",
+            "Closed Won": "#38b2ac",
+            "Closed Lost": "#f56565",
+            "Nurture": "#a0aec0",
+            "Disqualified": "#cbd5e0"
+        };
+
+        // Create SVG
+        const svg = d3.select('#chart')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        // Create sankey generator
+        const sankey = d3.sankey()
+            .nodeId(d => d.name)
+            .nodeWidth(20)
+            .nodePadding(20)
+            .nodeAlign(d3.sankeyLeft)
+            .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]]);
+
+        // Tooltip
+        const tooltip = d3.select('.tooltip');
+
+        // Data sets for different time periods
+        const dataSets = {
+            current: {
+                nodes: [
+                    { name: "New Leads", category: "source" },
+                    { name: "MQL", category: "qualified" },
+                    { name: "SQL", category: "qualified" },
+                    { name: "Opportunity", category: "active" },
+                    { name: "Proposal", category: "active" },
+                    { name: "Negotiation", category: "active" },
+                    { name: "Closed Won", category: "success" },
+                    { name: "Closed Lost", category: "lost" },
+                    { name: "Nurture", category: "hold" },
+                    { name: "Disqualified", category: "lost" }
+                ],
+                links: [
+                    { source: "New Leads", target: "MQL", value: 1020 },
+                    { source: "New Leads", target: "Disqualified", value: 480 },
+                    { source: "MQL", target: "SQL", value: 765 },
+                    { source: "MQL", target: "Nurture", value: 255 },
+                    { source: "SQL", target: "Opportunity", value: 612 },
+                    { source: "SQL", target: "Disqualified", value: 153 },
+                    { source: "Opportunity", target: "Proposal", value: 490 },
+                    { source: "Opportunity", target: "Closed Lost", value: 122 },
+                    { source: "Proposal", target: "Negotiation", value: 367 },
+                    { source: "Proposal", target: "Closed Lost", value: 123 },
+                    { source: "Negotiation", target: "Closed Won", value: 294 },
+                    { source: "Negotiation", target: "Closed Lost", value: 73 },
+                    { source: "Nurture", target: "SQL", value: 51 }
+                ]
+            },
+            previous: {
+                nodes: [
+                    { name: "New Leads", category: "source" },
+                    { name: "MQL", category: "qualified" },
+                    { name: "SQL", category: "qualified" },
+                    { name: "Opportunity", category: "active" },
+                    { name: "Proposal", category: "active" },
+                    { name: "Negotiation", category: "active" },
+                    { name: "Closed Won", category: "success" },
+                    { name: "Closed Lost", category: "lost" },
+                    { name: "Nurture", category: "hold" },
+                    { name: "Disqualified", category: "lost" }
+                ],
+                links: [
+                    { source: "New Leads", target: "MQL", value: 850 },
+                    { source: "New Leads", target: "Disqualified", value: 400 },
+                    { source: "MQL", target: "SQL", value: 637 },
+                    { source: "MQL", target: "Nurture", value: 213 },
+                    { source: "SQL", target: "Opportunity", value: 510 },
+                    { source: "SQL", target: "Disqualified", value: 127 },
+                    { source: "Opportunity", target: "Proposal", value: 408 },
+                    { source: "Opportunity", target: "Closed Lost", value: 102 },
+                    { source: "Proposal", target: "Negotiation", value: 306 },
+                    { source: "Proposal", target: "Closed Lost", value: 102 },
+                    { source: "Negotiation", target: "Closed Won", value: 245 },
+                    { source: "Negotiation", target: "Closed Lost", value: 61 },
+                    { source: "Nurture", target: "SQL", value: 43 }
+                ]
+            },
+            year: {
+                nodes: [
+                    { name: "New Leads", category: "source" },
+                    { name: "MQL", category: "qualified" },
+                    { name: "SQL", category: "qualified" },
+                    { name: "Opportunity", category: "active" },
+                    { name: "Proposal", category: "active" },
+                    { name: "Negotiation", category: "active" },
+                    { name: "Closed Won", category: "success" },
+                    { name: "Closed Lost", category: "lost" },
+                    { name: "Nurture", category: "hold" },
+                    { name: "Disqualified", category: "lost" }
+                ],
+                links: [
+                    { source: "New Leads", target: "MQL", value: 4080 },
+                    { source: "New Leads", target: "Disqualified", value: 1920 },
+                    { source: "MQL", target: "SQL", value: 3060 },
+                    { source: "MQL", target: "Nurture", value: 1020 },
+                    { source: "SQL", target: "Opportunity", value: 2448 },
+                    { source: "SQL", target: "Disqualified", value: 612 },
+                    { source: "Opportunity", target: "Proposal", value: 1958 },
+                    { source: "Opportunity", target: "Closed Lost", value: 490 },
+                    { source: "Proposal", target: "Negotiation", value: 1468 },
+                    { source: "Proposal", target: "Closed Lost", value: 490 },
+                    { source: "Negotiation", target: "Closed Won", value: 1174 },
+                    { source: "Negotiation", target: "Closed Lost", value: 294 },
+                    { source: "Nurture", target: "SQL", value: 204 }
+                ]
+            }
+        };
+
+        function renderSankey(data) {
+            // Clear previous chart
+            svg.selectAll('*').remove();
+
+            // Generate the sankey diagram
+            const { nodes, links } = sankey({
+                nodes: data.nodes.map(d => Object.assign({}, d)),
+                links: data.links.map(d => Object.assign({}, d))
+            });
+
+            // Add gradient definitions
+            const defs = svg.append('defs');
+
+            links.forEach((link, i) => {
+                const gradient = defs.append('linearGradient')
+                    .attr('id', `gradient-${i}`)
+                    .attr('gradientUnits', 'userSpaceOnUse')
+                    .attr('x1', link.source.x1)
+                    .attr('x2', link.target.x0);
+
+                gradient.append('stop')
+                    .attr('offset', '0%')
+                    .attr('stop-color', colors[link.source.name])
+                    .attr('stop-opacity', 0.7);
+
+                gradient.append('stop')
+                    .attr('offset', '100%')
+                    .attr('stop-color', colors[link.target.name])
+                    .attr('stop-opacity', 0.7);
+            });
+
+            // Add links
+            const link = svg.append('g')
+                .selectAll('.link')
+                .data(links)
+                .join('path')
+                .attr('class', 'link')
+                .attr('d', d3.sankeyLinkHorizontal())
+                .attr('stroke', (d, i) => `url(#gradient-${i})`)
+                .attr('stroke-width', d => Math.max(1, d.width))
+                .on('mouseover', function(event, d) {
+                    d3.select(this).style('stroke-opacity', 0.7);
+                    tooltip.style('opacity', 1)
+                        .html(`
+                            <strong>${d.source.name} → ${d.target.name}</strong><br/>
+                            Leads: ${d.value.toLocaleString()}<br/>
+                            ${((d.value / d.source.value) * 100).toFixed(1)}% of ${d.source.name}
+                        `);
+                })
+                .on('mousemove', function(event) {
+                    tooltip.style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select(this).style('stroke-opacity', 0.4);
+                    tooltip.style('opacity', 0);
+                });
+
+            // Add nodes
+            const node = svg.append('g')
+                .selectAll('.node')
+                .data(nodes)
+                .join('g')
+                .attr('class', 'node');
+
+            // Add rectangles for nodes
+            node.append('rect')
+                .attr('x', d => d.x0)
+                .attr('y', d => d.y0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('width', d => d.x1 - d.x0)
+                .attr('fill', d => colors[d.name])
+                .attr('stroke', d => d3.color(colors[d.name]).darker(0.5))
+                .attr('stroke-width', 1)
+                .on('mouseover', function(event, d) {
+                    tooltip.style('opacity', 1)
+                        .html(`
+                            <strong>${d.name}</strong><br/>
+                            Total: ${d.value.toLocaleString()} leads<br/>
+                            ${d.sourceLinks.length > 0 ? `Outflow: ${d.sourceLinks.reduce((sum, link) => sum + link.value, 0).toLocaleString()}` : ''}
+                        `);
+                })
+                .on('mousemove', function(event) {
+                    tooltip.style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    tooltip.style('opacity', 0);
+                });
+
+            // Add labels
+            node.append('text')
+                .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+                .attr('y', d => (d.y1 + d.y0) / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+                .text(d => d.name)
+                .style('fill', '#2d3748');
+
+            // Add value labels
+            node.append('text')
+                .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+                .attr('y', d => (d.y1 + d.y0) / 2 + 16)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+                .text(d => d.value.toLocaleString())
+                .style('fill', '#718096')
+                .style('font-size', '12px');
+        }
+
+        function updateData(period) {
+            renderSankey(dataSets[period]);
+
+            // Update metrics based on period
+            const metrics = document.querySelectorAll('.metric-value');
+            if (period === 'previous') {
+                metrics[0].textContent = '1,250';
+                metrics[1].textContent = '64%';
+                metrics[2].textContent = '38%';
+                metrics[3].textContent = '$1.8M';
+                metrics[4].textContent = '26d';
+            } else if (period === 'year') {
+                metrics[0].textContent = '6,000';
+                metrics[1].textContent = '66%';
+                metrics[2].textContent = '40%';
+                metrics[3].textContent = '$8.7M';
+                metrics[4].textContent = '24d';
+            } else {
+                metrics[0].textContent = '1,500';
+                metrics[1].textContent = '68%';
+                metrics[2].textContent = '42%';
+                metrics[3].textContent = '$2.4M';
+                metrics[4].textContent = '23d';
+            }
+        }
+
+        // Initial render
+        renderSankey(dataSets.current);
+    </script>
+</body>
+</html>

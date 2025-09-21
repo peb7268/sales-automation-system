@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: sales_dashboard
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sales-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.3
@@ -18,6 +20,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - sales-network
 
   kafka:
     image: confluentinc/cp-kafka:7.5.3
@@ -32,6 +36,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - sales-network
 
   redis:
     image: redis:7.2-alpine
@@ -39,7 +45,73 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - sales-network
+
+  dashboard:
+    build:
+      context: ../dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/sales_dashboard"
+      NEXT_PUBLIC_SUPABASE_URL: "http://postgres:5432"
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "your-anon-key"
+      KAFKA_BROKERS: "kafka:29092"
+      REDIS_URL: "redis://redis:6379"
+      NEXTAUTH_URL: "http://localhost:3000"
+      NEXTAUTH_SECRET: "your-secret-key-here-change-in-production"
+      GOOGLE_CLIENT_ID: "704137155580-2cgt0ne6lk08ooh371r5q8ailbbvinst.apps.googleusercontent.com"
+      GOOGLE_CLIENT_SECRET: "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"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+    volumes:
+      - ../dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - sales-network
+    command: sh -c "npm install --legacy-peer-deps && npm run dev"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@milehighmarketing.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - sales-network
+    restart: unless-stopped
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+      JVM_OPTS: "-Xms32M -Xmx64M"
+      SERVER_SERVLET_CONTEXTPATH: "/"
+    depends_on:
+      - kafka
+    networks:
+      - sales-network
+    restart: unless-stopped
+
+networks:
+  sales-network:
+    driver: bridge
 
 volumes:
   postgres_data:
   redis_data:
+  pgadmin_data:

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js - Animated Meshes</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r150/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #canvas { width: 100%; height: 600px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Three.js - Animated Performance Metrics</h1>
+        <div id="canvas"></div>
+    </div>
+    <script>
+        const container = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+        scene.fog = new THREE.Fog(0x1a1a1a, 1, 100);
+
+        const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / 600, 0.1, 1000);
+        camera.position.set(0, 10, 30);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.offsetWidth, 600);
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xff0040, 2, 100);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x0040ff, 2, 100);
+        pointLight2.position.set(-10, -10, -10);
+        scene.add(pointLight2);
+
+        // Create animated bars
+        const bars = [];
+        const barCount = 10;
+
+        for (let i = 0; i < barCount; i++) {
+            const geometry = new THREE.BoxGeometry(1.5, Math.random() * 10 + 1, 1.5);
+            const material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color().setHSL(i / barCount, 1, 0.5),
+                emissive: new THREE.Color().setHSL(i / barCount, 1, 0.25),
+                emissiveIntensity: 0.4
+            });
+
+            const bar = new THREE.Mesh(geometry, material);
+            bar.position.x = (i - barCount / 2) * 2;
+            bar.userData = {
+                originalHeight: geometry.parameters.height,
+                phase: Math.random() * Math.PI * 2
+            };
+
+            bars.push(bar);
+            scene.add(bar);
+        }
+
+        // Add grid
+        const gridHelper = new THREE.GridHelper(30, 30, 0x444444, 0x222222);
+        scene.add(gridHelper);
+
+        // Animation
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Animate bars
+            bars.forEach((bar, index) => {
+                const scale = 1 + Math.sin(elapsedTime * 2 + bar.userData.phase) * 0.3;
+                bar.scale.y = scale;
+                bar.position.y = (bar.userData.originalHeight * scale) / 2;
+                bar.rotation.y = Math.sin(elapsedTime + index * 0.5) * 0.1;
+            });
+
+            // Animate lights
+            pointLight1.position.x = Math.sin(elapsedTime) * 20;
+            pointLight1.position.z = Math.cos(elapsedTime) * 20;
+
+            pointLight2.position.x = Math.cos(elapsedTime) * 20;
+            pointLight2.position.z = Math.sin(elapsedTime) * 20;
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.offsetWidth / 600;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, 600);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCharts - Line & Area Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ApexCharts - Line & Area Chart Examples</h1>
+        <div id="lineChart" class="chart"></div>
+        <div id="areaChart" class="chart"></div>
+    </div>
+    <script>
+        // Line Chart
+        const lineOptions = {
+            series: [{
+                name: 'Revenue',
+                data: [31, 40, 28, 51, 42, 82, 56]
+            }, {
+                name: 'Profit',
+                data: [11, 32, 45, 32, 34, 52, 41]
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: { enabled: true }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            title: { text: 'Revenue & Profit Trends', align: 'left' },
+            xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+            yaxis: { title: { text: 'Value ($k)' } },
+            colors: ['#008FFB', '#00E396']
+        };
+        new ApexCharts(document.querySelector("#lineChart"), lineOptions).render();
+
+        // Area Chart with Gradient
+        const areaOptions = {
+            series: [{
+                name: 'Sales',
+                data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33, 43]
+            }, {
+                name: 'Revenue',
+                data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43, 56]
+            }],
+            chart: {
+                type: 'area',
+                height: 350,
+                toolbar: { show: true }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 2 },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.5,
+                    opacityTo: 0,
+                    stops: [0, 90, 100]
+                }
+            },
+            title: { text: 'Monthly Performance', align: 'left' },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            colors: ['#546E7A', '#26A69A']
+        };
+        new ApexCharts(document.querySelector("#areaChart"), areaOptions).render();
+    </script>
+</body>
+</html>

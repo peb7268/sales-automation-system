@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plotly - 3D Surface Plot</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plotly - 3D Surface Plots</h1>
+        <div id="surface1"></div>
+        <div id="surface2"></div>
+    </div>
+    <script>
+        // Generate sample data for surface plot
+        function generateSurfaceData() {
+            const size = 25;
+            const z = [];
+            for(let i = 0; i < size; i++) {
+                z[i] = [];
+                for(let j = 0; j < size; j++) {
+                    z[i][j] = Math.sin(Math.sqrt(i*i + j*j) / 2) * Math.cos(j/4);
+                }
+            }
+            return z;
+        }
+
+        // Revenue Surface Plot
+        const surface1Data = [{
+            z: generateSurfaceData(),
+            type: 'surface',
+            colorscale: 'Viridis'
+        }];
+
+        const surface1Layout = {
+            title: 'Revenue Performance Surface',
+            scene: {
+                xaxis: { title: 'Time Period' },
+                yaxis: { title: 'Product Line' },
+                zaxis: { title: 'Revenue' },
+                camera: { eye: { x: 1.5, y: 1.5, z: 1.5 } }
+            },
+            height: 500
+        };
+
+        Plotly.newPlot('surface1', surface1Data, surface1Layout);
+
+        // Heatmap Surface
+        const x = [], y = [], z = [];
+        for(let i = 0; i < 50; i++) {
+            for(let j = 0; j < 50; j++) {
+                x.push(i);
+                y.push(j);
+                z.push(Math.sin(i/5) * Math.cos(j/5) + Math.random() * 0.5);
+            }
+        }
+
+        const surface2Data = [{
+            x: x,
+            y: y,
+            z: z,
+            type: 'scatter3d',
+            mode: 'markers',
+            marker: {
+                size: 2,
+                color: z,
+                colorscale: 'Jet',
+                showscale: true,
+                colorbar: { title: 'Value' }
+            }
+        }];
+
+        const surface2Layout = {
+            title: 'Performance Metrics 3D Scatter',
+            scene: {
+                xaxis: { title: 'Metric A' },
+                yaxis: { title: 'Metric B' },
+                zaxis: { title: 'Performance Score' }
+            },
+            height: 500
+        };
+
+        Plotly.newPlot('surface2', surface2Data, surface2Layout);
+    </script>
+</body>
+</html>

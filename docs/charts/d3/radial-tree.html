@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js - Radial Tree</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .node circle { fill: #999; }
+        .node text { font: 10px sans-serif; }
+        .link { fill: none; stroke: #555; stroke-opacity: 0.4; stroke-width: 1.5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>D3.js - Radial Tree Visualization</h1>
+        <div id="chart"></div>
+    </div>
+    <script>
+        const width = 960, height = 960, radius = width / 2;
+        const svg = d3.select('#chart').append('svg').attr('width', width).attr('height', height);
+        const g = svg.append('g').attr('transform', `translate(${radius},${radius})`);
+
+        const data = {
+            name: "Company",
+            children: [
+                { name: "Sales", children: [
+                    { name: "Direct", children: [{ name: "Online", value: 3000 }, { name: "Retail", value: 2000 }] },
+                    { name: "Partners", children: [{ name: "Resellers", value: 1500 }, { name: "Affiliates", value: 1000 }] }
+                ]},
+                { name: "Engineering", children: [
+                    { name: "Frontend", children: [{ name: "React", value: 2000 }, { name: "Vue", value: 1000 }] },
+                    { name: "Backend", children: [{ name: "Node", value: 2500 }, { name: "Python", value: 1500 }] }
+                ]},
+                { name: "Marketing", children: [
+                    { name: "Digital", value: 2000 },
+                    { name: "Events", value: 1500 }
+                ]}
+            ]
+        };
+
+        const tree = d3.tree().size([2 * Math.PI, radius - 100]).separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
+        const root = d3.hierarchy(data);
+        tree(root);
+
+        const link = g.selectAll('.link')
+            .data(root.links())
+            .enter().append('path')
+            .attr('class', 'link')
+            .attr('d', d3.linkRadial()
+                .angle(d => d.x)
+                .radius(d => d.y));
+
+        const node = g.selectAll('.node')
+            .data(root.descendants())
+            .enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0)`);
+
+        node.append('circle')
+            .attr('r', 4)
+            .style('fill', d => d.children ? '#555' : '#999');
+
+        node.append('text')
+            .attr('dy', '0.31em')
+            .attr('x', d => d.x < Math.PI === !d.children ? 6 : -6)
+            .attr('text-anchor', d => d.x < Math.PI === !d.children ? 'start' : 'end')
+            .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+            .text(d => d.data.name);
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { usePipelineStore } from "@/stores/usePipelineStore"
+import { usePipelineStoreWithSupabase } from "@/stores/usePipelineStoreWithSupabase"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -26,11 +26,22 @@ import {
   RefreshCw,
   ArrowUp,
   ArrowDown,
+  Wifi,
+  WifiOff,
+  Loader2,
+  X,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  FileUp,
 } from "lucide-react"
 import { PipelineStage } from "@/types"
-import { PipelineFunnel } from "./pipeline-funnel"
+import { PipelineSankey } from "./pipeline-sankey"
 import { ProspectList } from "./prospect-list"
 import { ResearchMonitor } from "./research-monitor"
+import { ProspectForm } from "./prospect-form"
+import { DeleteProspectDialog } from "./delete-prospect-dialog"
+import { CsvImportDialog } from "./csv-import-dialog"
 import { motion } from "framer-motion"
 
 const stageColors: Record<PipelineStage, string> = {
@@ -60,7 +71,51 @@ export function PipelineDashboard() {
     getStageCount,
     isResearching,
     setIsResearching,
-  } = usePipelineStore()
+    fetchProspects,
+    isLoading,
+    error,
+    wsConnected,
+    wsConnecting,
+    connectWebSocket,
+    disconnectWebSocket,
+    notifications,
+    removeNotification,
+  } = usePipelineStoreWithSupabase()
+
+  // State for prospect form
+  const [isProspectFormOpen, setIsProspectFormOpen] = React.useState(false)
+  const [selectedProspectForEdit, setSelectedProspectForEdit] = React.useState<null | any>(null)
+  const [formMode, setFormMode] = React.useState<'create' | 'edit'>('create')
+
+  // State for delete dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [prospectToDelete, setProspectToDelete] = React.useState<null | any>(null)
+
+  // State for CSV import dialog
+  const [isImportDialogOpen, setIsImportDialogOpen] = React.useState(false)
+
+  // Load prospects on mount and connect WebSocket
+  React.useEffect(() => {
+    fetchProspects()
+    connectWebSocket()
+
+    // Cleanup on unmount
+    return () => {
+      disconnectWebSocket()
+    }
+  }, [])
+
+  // Auto-reconnect WebSocket if disconnected
+  React.useEffect(() => {
+    if (!wsConnected && !wsConnecting) {
+      const reconnectTimer = setTimeout(() => {
+        console.log('Attempting WebSocket reconnection...')
+        connectWebSocket()
+      }, 5000)
+
+      return () => clearTimeout(reconnectTimer)
+    }
+  }, [wsConnected, wsConnecting])
 
   const filteredProspects = getFilteredProspects()
   const industries = Array.from(new Set(prospects.map(p => p.business.industry)))
@@ -77,6 +132,44 @@ export function PipelineDashboard() {
   const qualifiedCount = stageMetrics.qualified
   const conversionRate = totalProspects > 0 ? (qualifiedCount / totalProspects * 100).toFixed(1) : "0"
 
+  // Handle edit prospect
+  const handleEditProspect = (prospect: any) => {
+    setSelectedProspectForEdit(prospect)
+    setFormMode('edit')
+    setIsProspectFormOpen(true)
+  }
+
+  // Handle delete prospect
+  const handleDeleteProspect = (prospect: any) => {
+    setProspectToDelete(prospect)
+    setIsDeleteDialogOpen(true)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Loading prospects...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => fetchProspects()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header with Actions */}
@@ -87,13 +180,35 @@ export function PipelineDashboard() {
             Track and manage your prospect research and qualification
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* WebSocket Status Indicator */}
+          <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-muted">
+            {wsConnecting ? (
+              <Loader2 className="h-4 w-4 animate-spin text-yellow-500" />
+            ) : wsConnected ? (
+              <Wifi className="h-4 w-4 text-green-500" />
+            ) : (
+              <WifiOff className="h-4 w-4 text-red-500" />
+            )}
+            <span className="text-sm">
+              {wsConnecting ? "Connecting..." : wsConnected ? "Live" : "Offline"}
+            </span>
+          </div>
+
           <Button variant="outline" size="sm">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsImportDialogOpen(true)}
+          >
+            <FileUp className="mr-2 h-4 w-4" />
+            Import CSV
+          </Button>
+          <Button
+            variant="outline"
             size="sm"
             onClick={() => setIsResearching(!isResearching)}
             className={isResearching ? "animate-pulse" : ""}
@@ -101,7 +216,14 @@ export function PipelineDashboard() {
             <RefreshCw className={`mr-2 h-4 w-4 ${isResearching ? "animate-spin" : ""}`} />
             {isResearching ? "Researching..." : "Start Research"}
           </Button>
-          <Button size="sm">
+          <Button
+            size="sm"
+            onClick={() => {
+              setFormMode('create')
+              setSelectedProspectForEdit(null)
+              setIsProspectFormOpen(true)
+            }}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Prospect
           </Button>
@@ -167,51 +289,6 @@ export function PipelineDashboard() {
         </Card>
       </div>
 
-      {/* Interactive Pipeline Stages */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pipeline Stages</CardTitle>
-          <CardDescription>
-            Click on a stage to filter prospects
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
-            {(["cold", "contacted", "interested", "qualified"] as PipelineStage[]).map((stage, index) => {
-              const count = stageMetrics[stage]
-              const percentage = totalProspects > 0 ? (count / totalProspects * 100).toFixed(0) : "0"
-              const isActive = stageFilter === stage
-              
-              return (
-                <motion.div
-                  key={stage}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Button
-                    variant={isActive ? "default" : "outline"}
-                    className="h-auto w-full flex-col items-start p-4"
-                    onClick={() => setStageFilter(isActive ? "all" : stage)}
-                  >
-                    <div className="flex w-full items-center justify-between">
-                      <div className={`h-3 w-3 rounded-full ${stageColors[stage]}`} />
-                      {index < 3 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
-                    </div>
-                    <div className="mt-3 w-full">
-                      <p className="text-left text-sm font-medium">{stageTitles[stage]}</p>
-                      <p className="mt-1 text-left text-2xl font-bold">{count}</p>
-                      <p className="mt-1 text-left text-xs text-muted-foreground">
-                        {percentage}% of total
-                      </p>
-                    </div>
-                  </Button>
-                </motion.div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Filters and Search */}
       <Card>
@@ -256,21 +333,83 @@ export function PipelineDashboard() {
         </CardContent>
       </Card>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Pipeline Funnel Visualization */}
-        <div className="lg:col-span-1">
-          <PipelineFunnel />
-        </div>
-        
-        {/* Prospect List */}
-        <div className="lg:col-span-2">
-          <ProspectList prospects={filteredProspects} />
-        </div>
-      </div>
+      {/* Pipeline Sankey Visualization - Full Width */}
+      <PipelineSankey />
+
+      {/* Prospect List - Full Width */}
+      <ProspectList
+        prospects={filteredProspects}
+        onEditProspect={handleEditProspect}
+        onDeleteProspect={handleDeleteProspect}
+      />
 
       {/* Research Monitor */}
       <ResearchMonitor />
+
+      {/* Notifications */}
+      {notifications.length > 0 && (
+        <div className="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm">
+          {notifications.map((notification) => (
+            <motion.div
+              key={notification.id}
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className={`p-4 rounded-lg shadow-lg border flex items-start gap-3 ${
+                notification.type === 'error'
+                  ? 'bg-red-50 border-red-200 text-red-800'
+                  : notification.type === 'success'
+                  ? 'bg-green-50 border-green-200 text-green-800'
+                  : notification.type === 'warning'
+                  ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                  : 'bg-blue-50 border-blue-200 text-blue-800'
+              }`}
+            >
+              {notification.type === 'error' && <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />}
+              {notification.type === 'success' && <CheckCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />}
+              {notification.type === 'warning' && <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />}
+              {notification.type === 'info' && <Info className="h-5 w-5 mt-0.5 flex-shrink-0" />}
+
+              <div className="flex-1">
+                <p className="text-sm font-medium">{notification.message}</p>
+                <p className="text-xs opacity-70 mt-1">
+                  {notification.timestamp.toLocaleTimeString()}
+                </p>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => removeNotification(notification.id)}
+                className="h-6 w-6 p-0 hover:bg-black/10"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Prospect Form Modal */}
+      <ProspectForm
+        open={isProspectFormOpen}
+        onOpenChange={setIsProspectFormOpen}
+        prospect={selectedProspectForEdit}
+        mode={formMode}
+      />
+
+      {/* Delete Prospect Dialog */}
+      <DeleteProspectDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        prospect={prospectToDelete}
+      />
+
+      {/* CSV Import Dialog */}
+      <CsvImportDialog
+        open={isImportDialogOpen}
+        onOpenChange={setIsImportDialogOpen}
+      />
     </div>
   )
 }

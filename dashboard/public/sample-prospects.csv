@@ -1,0 +1,11 @@
+Business Name,Industry,Location,Contact Name,Email,Phone,Website,Temperature,Stage,Score,Notes
+"ABC Restaurant","restaurants","Denver, CO","John Smith","john@abcrestaurant.com","303-555-1234","https://abcrestaurant.com","warm","contacted","75","Interested in marketing services"
+"XYZ Retail Store","retail","Boulder, CO","Jane Doe","jane@xyzretail.com","720-555-5678","xyzretail.com","cold","cold","50","New prospect from trade show"
+"Professional Services Inc","professional_services","Aurora, CO","Michael Johnson","michael@proservices.com","303-555-9999","https://proservices.net","hot","qualified","90","Ready to close deal"
+"Elite Fitness Center","fitness","Denver, CO","Sarah Williams","sarah@elitefitness.com","303-555-2222","www.elitefitness.com","warm","interested","65","Looking for social media management"
+"Beauty Bliss Salon","beauty_salons","Littleton, CO","Emma Davis","emma@beautybliss.com","720-555-3333","","cold","cold","40","Small salon, limited budget"
+"Tech Solutions LLC","technology","Denver, CO","Robert Brown","robert@techsolutions.io","303-555-4444","https://techsolutions.io","hot","qualified","85","Enterprise client potential"
+"Green Landscaping","home_services","Westminster, CO","","","303-555-5555","","cold","cold","30","Residential landscaping service"
+"Medical Associates","healthcare","Denver, CO","Dr. Lisa Chen","lisa@medassociates.com","303-555-6666","https://medicalassociates.com","warm","contacted","70","Multi-location medical practice"
+"Auto Express","automotive","Commerce City, CO","Tony Martinez","tony@autoexpress.net","720-555-7777","autoexpress.net","warm","interested","60","Auto repair chain"
+"Legal Partners LLP","legal_services","Denver, CO","Jennifer Taylor","jennifer@legalpartners.com","303-555-8888","www.legalpartners.com","cold","contacted","55","Law firm downtown"

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plotly - Geographic Heatmap</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plotly - Geographic Heatmap Examples</h1>
+        <div id="usMap"></div>
+        <div id="worldMap"></div>
+    </div>
+    <script>
+        // US State Sales Heatmap
+        const usData = [{
+            type: 'choropleth',
+            locationmode: 'USA-states',
+            locations: ['CA', 'TX', 'NY', 'FL', 'IL', 'PA', 'OH', 'GA', 'NC', 'MI'],
+            z: [450, 380, 420, 350, 290, 270, 250, 240, 230, 220],
+            text: ['California', 'Texas', 'New York', 'Florida', 'Illinois', 'Pennsylvania', 'Ohio', 'Georgia', 'North Carolina', 'Michigan'],
+            colorscale: 'Blues',
+            colorbar: { title: 'Sales ($k)', thickness: 15 }
+        }];
+
+        const usLayout = {
+            title: 'Sales by State',
+            geo: { scope: 'usa', projection: { type: 'albers usa' } },
+            height: 500
+        };
+
+        Plotly.newPlot('usMap', usData, usLayout);
+
+        // World Map
+        const worldData = [{
+            type: 'choropleth',
+            locations: ['USA', 'CAN', 'GBR', 'DEU', 'FRA', 'JPN', 'CHN', 'IND', 'BRA', 'AUS'],
+            z: [100, 80, 70, 65, 60, 85, 95, 75, 55, 50],
+            text: ['United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Japan', 'China', 'India', 'Brazil', 'Australia'],
+            colorscale: [
+                [0, '#f7fcfd'], [0.2, '#e0ecf4'], [0.4, '#bfd3e6'],
+                [0.6, '#9ebcda'], [0.8, '#8c96c6'], [1, '#810f7c']
+            ],
+            reversescale: false,
+            marker: { line: { color: 'rgb(180,180,180)', width: 0.5 } },
+            colorbar: { title: 'Market Share %', thickness: 15 }
+        }];
+
+        const worldLayout = {
+            title: 'Global Market Presence',
+            geo: { projection: { type: 'natural earth' }, showcountries: true },
+            height: 500
+        };
+
+        Plotly.newPlot('worldMap', worldData, worldLayout);
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharts - Area Chart Example</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recharts - Area Chart Examples</h1>
+        <div id="chart1" class="chart-container"></div>
+        <div id="chart2" class="chart-container"></div>
+        <div id="chart3" class="chart-container"></div>
+    </div>
+
+    <script type="text/babel">
+        const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush, ReferenceLine } = Recharts;
+
+        // Sample data
+        const monthlyRevenue = [
+            { month: 'Jan', revenue: 4000, cost: 2400, profit: 1600 },
+            { month: 'Feb', revenue: 3000, cost: 1398, profit: 1602 },
+            { month: 'Mar', revenue: 5000, cost: 2800, profit: 2200 },
+            { month: 'Apr', revenue: 4780, cost: 2908, profit: 1872 },
+            { month: 'May', revenue: 5890, cost: 3800, profit: 2090 },
+            { month: 'Jun', revenue: 4390, cost: 2800, profit: 1590 },
+            { month: 'Jul', revenue: 6490, cost: 3300, profit: 3190 },
+            { month: 'Aug', revenue: 5000, cost: 2400, profit: 2600 },
+            { month: 'Sep', revenue: 4000, cost: 2398, profit: 1602 },
+            { month: 'Oct', revenue: 6000, cost: 3800, profit: 2200 },
+            { month: 'Nov', revenue: 7780, cost: 4908, profit: 2872 },
+            { month: 'Dec', revenue: 8890, cost: 5800, profit: 3090 }
+        ];
+
+        const timeSeriesData = Array.from({ length: 50 }, (_, i) => ({
+            day: `Day ${i + 1}`,
+            uv: Math.floor(Math.random() * 3000) + 1000,
+            pv: Math.floor(Math.random() * 5000) + 2000,
+            amt: Math.floor(Math.random() * 2000) + 500
+        }));
+
+        // Simple Area Chart with Gradient
+        const GradientAreaChart = () => {
+            return (
+                <div>
+                    <h2>Revenue Analysis with Gradient Fill</h2>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <AreaChart data={monthlyRevenue} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                                </linearGradient>
+                                <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                                </linearGradient>
+                                <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#ffc658" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <Tooltip />
+                            <Legend />
+                            <Area type="monotone" dataKey="revenue" stroke="#8884d8" fillOpacity={1} fill="url(#colorRevenue)" />
+                            <Area type="monotone" dataKey="cost" stroke="#82ca9d" fillOpacity={1} fill="url(#colorCost)" />
+                            <Area type="monotone" dataKey="profit" stroke="#ffc658" fillOpacity={1} fill="url(#colorProfit)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Stacked Area Chart
+        const StackedAreaChart = () => {
+            return (
+                <div>
+                    <h2>Stacked Revenue Components</h2>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <AreaChart data={monthlyRevenue} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Area type="monotone" dataKey="profit" stackId="1" stroke="#ffc658" fill="#ffc658" />
+                            <Area type="monotone" dataKey="cost" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+                            <ReferenceLine y={5000} stroke="red" strokeDasharray="3 3" label="Target" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Area Chart with Brush
+        const BrushAreaChart = () => {
+            return (
+                <div>
+                    <h2>Time Series with Zoom Control</h2>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <AreaChart data={timeSeriesData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0.1}/>
+                                </linearGradient>
+                                <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.1}/>
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="day" />
+                            <YAxis />
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <Tooltip />
+                            <Legend />
+                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+                            <Area type="monotone" dataKey="pv" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
+                            <Brush dataKey="day" height={30} stroke="#8884d8" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Render charts
+        ReactDOM.render(<GradientAreaChart />, document.getElementById('chart1'));
+        ReactDOM.render(<StackedAreaChart />, document.getElementById('chart2'));
+        ReactDOM.render(<BrushAreaChart />, document.getElementById('chart3'));
+    </script>
+</body>
+</html>

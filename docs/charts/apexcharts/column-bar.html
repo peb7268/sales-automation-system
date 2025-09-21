@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCharts - Column & Bar Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ApexCharts - Column & Bar Chart Examples</h1>
+        <div id="columnChart" class="chart"></div>
+        <div id="barChart" class="chart"></div>
+    </div>
+    <script>
+        // Column Chart
+        const columnOptions = {
+            series: [{
+                name: 'Q1',
+                data: [44, 55, 57, 56, 61, 58]
+            }, {
+                name: 'Q2',
+                data: [76, 85, 101, 98, 87, 105]
+            }],
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded',
+                    borderRadius: 10
+                }
+            },
+            dataLabels: { enabled: false },
+            stroke: { show: true, width: 2, colors: ['transparent'] },
+            xaxis: { categories: ['Product A', 'Product B', 'Product C', 'Product D', 'Product E', 'Product F'] },
+            yaxis: { title: { text: 'Sales (thousands)' } },
+            fill: { opacity: 1 },
+            title: { text: 'Quarterly Sales Comparison', align: 'center' },
+            colors: ['#008FFB', '#00E396']
+        };
+        new ApexCharts(document.querySelector("#columnChart"), columnOptions).render();
+
+        // Horizontal Bar Chart
+        const barOptions = {
+            series: [{
+                data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+            }],
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    horizontal: true,
+                    distributed: true
+                }
+            },
+            dataLabels: { enabled: true },
+            xaxis: {
+                categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy',
+                           'France', 'Japan', 'United States', 'China', 'Germany']
+            },
+            title: { text: 'Sales by Country', align: 'center' }
+        };
+        new ApexCharts(document.querySelector("#barChart"), barOptions).render();
+    </script>
+</body>
+</html>

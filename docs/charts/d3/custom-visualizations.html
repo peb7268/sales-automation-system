@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js - Custom Visualizations</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 30px; }
+        .chart-container { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>D3.js - Custom Visualizations</h1>
+        <h2>Animated Bubble Chart</h2>
+        <div id="bubble-chart" class="chart-container"></div>
+        <h2>Radial Progress Meters</h2>
+        <div id="radial-progress" class="chart-container"></div>
+    </div>
+    <script>
+        // Animated Bubble Chart
+        (function() {
+            const width = 960, height = 500;
+            const svg = d3.select('#bubble-chart').append('svg').attr('width', width).attr('height', height);
+
+            const data = d3.range(20).map(i => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 30 + 10,
+                color: d3.schemeCategory10[i % 10]
+            }));
+
+            const circles = svg.selectAll('circle')
+                .data(data)
+                .enter().append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 0)
+                .attr('fill', d => d.color)
+                .attr('opacity', 0.7);
+
+            circles.transition()
+                .duration(1000)
+                .attr('r', d => d.r);
+
+            function animate() {
+                circles.transition()
+                    .duration(2000)
+                    .attr('cx', () => Math.random() * width)
+                    .attr('cy', () => Math.random() * height)
+                    .on('end', animate);
+            }
+            setTimeout(animate, 1500);
+        })();
+
+        // Radial Progress Meters
+        (function() {
+            const width = 200, height = 200;
+            const data = [
+                { label: 'Sales', value: 75 },
+                { label: 'Marketing', value: 60 },
+                { label: 'Development', value: 85 },
+                { label: 'Support', value: 92 }
+            ];
+
+            const container = d3.select('#radial-progress');
+
+            data.forEach(d => {
+                const svg = container.append('svg')
+                    .attr('width', width)
+                    .attr('height', height)
+                    .style('display', 'inline-block');
+
+                const g = svg.append('g')
+                    .attr('transform', `translate(${width/2},${height/2})`);
+
+                const arc = d3.arc()
+                    .innerRadius(60)
+                    .outerRadius(80)
+                    .startAngle(0);
+
+                // Background arc
+                g.append('path')
+                    .datum({ endAngle: 2 * Math.PI })
+                    .style('fill', '#ddd')
+                    .attr('d', arc);
+
+                // Foreground arc
+                const foreground = g.append('path')
+                    .datum({ endAngle: 0 })
+                    .style('fill', d3.schemeCategory10[data.indexOf(d)])
+                    .attr('d', arc);
+
+                // Animation
+                foreground.transition()
+                    .duration(1500)
+                    .attrTween('d', function(datum) {
+                        const interpolate = d3.interpolate(0, d.value * 2 * Math.PI / 100);
+                        return function(t) {
+                            datum.endAngle = interpolate(t);
+                            return arc(datum);
+                        };
+                    });
+
+                // Text labels
+                g.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '-0.2em')
+                    .style('font-size', '24px')
+                    .style('font-weight', 'bold')
+                    .text('0%')
+                    .transition()
+                    .duration(1500)
+                    .tween('text', function() {
+                        const interpolate = d3.interpolate(0, d.value);
+                        return function(t) {
+                            this.textContent = Math.round(interpolate(t)) + '%';
+                        };
+                    });
+
+                g.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '1.5em')
+                    .style('font-size', '14px')
+                    .text(d.label);
+            });
+        })();
+    </script>
+</body>
+</html>

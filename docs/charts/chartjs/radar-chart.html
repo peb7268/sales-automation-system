@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js - Radar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart-container { position: relative; height: 500px; margin: 30px auto; max-width: 600px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chart.js - Radar Chart Examples</h1>
+        <div class="chart-container">
+            <canvas id="radar1"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="radar2"></canvas>
+        </div>
+    </div>
+    <script>
+        // Skills Radar Chart
+        const ctx1 = document.getElementById('radar1').getContext('2d');
+        new Chart(ctx1, {
+            type: 'radar',
+            data: {
+                labels: ['Communication', 'Technical', 'Leadership', 'Creativity', 'Teamwork', 'Problem Solving'],
+                datasets: [{
+                    label: 'Employee A',
+                    data: [85, 92, 78, 88, 95, 90],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+                }, {
+                    label: 'Employee B',
+                    data: [75, 88, 92, 72, 85, 78],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Employee Skills Comparison'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20
+                        }
+                    }
+                }
+            }
+        });
+
+        // Product Features Radar
+        const ctx2 = document.getElementById('radar2').getContext('2d');
+        new Chart(ctx2, {
+            type: 'radar',
+            data: {
+                labels: ['Quality', 'Price', 'Features', 'Design', 'Support', 'Performance'],
+                datasets: [{
+                    label: 'Our Product',
+                    data: [90, 75, 95, 88, 92, 85],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                }, {
+                    label: 'Competitor A',
+                    data: [80, 85, 78, 90, 75, 82],
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 2
+                }, {
+                    label: 'Competitor B',
+                    data: [85, 70, 88, 75, 80, 90],
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Product Comparison Analysis'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

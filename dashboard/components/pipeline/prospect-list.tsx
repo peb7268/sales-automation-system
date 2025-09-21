@@ -7,14 +7,16 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { usePipelineStore } from "@/stores/usePipelineStore"
 import { IProspect, PipelineStage } from "@/types"
-import { 
+import {
   Phone,
   Mail,
   MapPin,
   Clock,
   TrendingUp,
   MoreVertical,
-  ChevronRight
+  ChevronRight,
+  Edit,
+  Trash2
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -39,9 +41,11 @@ const scoreColors = {
 
 interface ProspectListProps {
   prospects: IProspect[]
+  onEditProspect?: (prospect: IProspect) => void
+  onDeleteProspect?: (prospect: IProspect) => void
 }
 
-export function ProspectList({ prospects }: ProspectListProps) {
+export function ProspectList({ prospects, onEditProspect, onDeleteProspect }: ProspectListProps) {
   const { 
     selectedProspectIds,
     toggleProspectSelection,
@@ -149,6 +153,12 @@ export function ProspectList({ prospects }: ProspectListProps) {
                       <DropdownMenuItem onClick={() => setSelectedProspect(prospect)}>
                         View Details
                       </DropdownMenuItem>
+                      {onEditProspect && (
+                        <DropdownMenuItem onClick={() => onEditProspect(prospect)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit Prospect
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem>
                         <Phone className="mr-2 h-4 w-4" />
                         Start Call
@@ -162,10 +172,19 @@ export function ProspectList({ prospects }: ProspectListProps) {
                         Move to...
                       </DropdownMenuItem>
                       {prospect.pipelineStage !== 'qualified' && (
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handleMoveStage(prospect.id, 'qualified')}
                         >
                           Mark as Qualified
+                        </DropdownMenuItem>
+                      )}
+                      {onDeleteProspect && (
+                        <DropdownMenuItem
+                          onClick={() => onDeleteProspect(prospect)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete Prospect
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>

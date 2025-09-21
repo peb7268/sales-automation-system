@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharts - Radial Bar Chart Example</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recharts - Radial Bar & Radar Chart Examples</h1>
+        <div class="charts-grid">
+            <div id="chart1"></div>
+            <div id="chart2"></div>
+            <div id="chart3"></div>
+            <div id="chart4"></div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { RadialBarChart, RadialBar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, ResponsiveContainer, Tooltip, Cell } = Recharts;
+
+        // Sample data for radial bar
+        const performanceData = [
+            { name: 'Sales', value: 86, fill: '#8884d8' },
+            { name: 'Marketing', value: 72, fill: '#83a6ed' },
+            { name: 'Development', value: 92, fill: '#8dd1e1' },
+            { name: 'Customer Support', value: 78, fill: '#82ca9d' },
+            { name: 'Design', value: 85, fill: '#a4de6c' },
+            { name: 'Management', value: 68, fill: '#ffc658' }
+        ];
+
+        // Sample data for radar chart
+        const skillsData = [
+            { skill: 'JavaScript', A: 85, B: 72, fullMark: 100 },
+            { skill: 'React', A: 92, B: 88, fullMark: 100 },
+            { skill: 'Node.js', A: 78, B: 65, fullMark: 100 },
+            { skill: 'Python', A: 65, B: 85, fullMark: 100 },
+            { skill: 'DevOps', A: 70, B: 60, fullMark: 100 },
+            { skill: 'Database', A: 82, B: 75, fullMark: 100 }
+        ];
+
+        const monthlyPerformance = [
+            { month: 'Jan', sales: 85, target: 100 },
+            { month: 'Feb', sales: 88, target: 100 },
+            { month: 'Mar', sales: 92, target: 100 },
+            { month: 'Apr', sales: 78, target: 100 },
+            { month: 'May', sales: 95, target: 100 },
+            { month: 'Jun', sales: 89, target: 100 }
+        ];
+
+        // Simple Radial Bar Chart
+        const SimpleRadialBarChart = () => {
+            return (
+                <div>
+                    <h3>Department Performance Metrics</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="90%" data={performanceData}>
+                            <RadialBar minAngle={15} background clockWise dataKey="value">
+                                {performanceData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </RadialBar>
+                            <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
+                            <Tooltip />
+                        </RadialBarChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Radar Chart
+        const SimpleRadarChart = () => {
+            return (
+                <div>
+                    <h3>Skills Comparison</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <RadarChart data={skillsData}>
+                            <PolarGrid />
+                            <PolarAngleAxis dataKey="skill" />
+                            <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                            <Radar name="Developer A" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                            <Radar name="Developer B" dataKey="B" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+                            <Legend />
+                            <Tooltip />
+                        </RadarChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Custom Radial Bar with Labels
+        const CustomRadialBarChart = () => {
+            const data = [
+                { name: 'Q1', uv: 31.47, pv: 2400, fill: '#8884d8' },
+                { name: 'Q2', uv: 26.69, pv: 4567, fill: '#83a6ed' },
+                { name: 'Q3', uv: 15.69, pv: 1398, fill: '#8dd1e1' },
+                { name: 'Q4', uv: 8.22, pv: 9800, fill: '#82ca9d' }
+            ];
+
+            return (
+                <div>
+                    <h3>Quarterly Revenue Distribution</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" barSize={20} data={data}>
+                            <RadialBar
+                                minAngle={15}
+                                label={{ position: 'insideStart', fill: '#fff' }}
+                                background
+                                clockWise
+                                dataKey="uv"
+                            >
+                                {data.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </RadialBar>
+                            <Legend iconSize={10} layout="horizontal" verticalAlign="bottom" align="center" />
+                            <Tooltip />
+                        </RadialBarChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Multi-series Radar Chart
+        const ComplexRadarChart = () => {
+            const data = [
+                { category: 'Quality', current: 85, target: 90, industry: 75 },
+                { category: 'Efficiency', current: 78, target: 85, industry: 70 },
+                { category: 'Innovation', current: 92, target: 88, industry: 80 },
+                { category: 'Teamwork', current: 88, target: 90, industry: 82 },
+                { category: 'Customer Focus', current: 75, target: 95, industry: 85 },
+                { category: 'Growth', current: 82, target: 87, industry: 78 }
+            ];
+
+            return (
+                <div>
+                    <h3>Company Performance vs Targets</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <RadarChart data={data}>
+                            <PolarGrid strokeDasharray="3 3" />
+                            <PolarAngleAxis dataKey="category" />
+                            <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                            <Radar name="Current" dataKey="current" stroke="#8884d8" fill="#8884d8" fillOpacity={0.5} strokeWidth={2} />
+                            <Radar name="Target" dataKey="target" stroke="#ff7300" fill="#ff7300" fillOpacity={0.3} strokeWidth={2} strokeDasharray="5 5" />
+                            <Radar name="Industry Avg" dataKey="industry" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} strokeWidth={2} />
+                            <Legend />
+                            <Tooltip />
+                        </RadarChart>
+                    </ResponsiveContainer>
+                </div>
+            );
+        };
+
+        // Render charts
+        ReactDOM.render(<SimpleRadialBarChart />, document.getElementById('chart1'));
+        ReactDOM.render(<SimpleRadarChart />, document.getElementById('chart2'));
+        ReactDOM.render(<CustomRadialBarChart />, document.getElementById('chart3'));
+        ReactDOM.render(<ComplexRadarChart />, document.getElementById('chart4'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCharts - Radial Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ApexCharts - Radial & Donut Chart Examples</h1>
+        <div class="charts-grid">
+            <div id="radialBar"></div>
+            <div id="donutChart"></div>
+            <div id="semiCircle"></div>
+            <div id="pieChart"></div>
+        </div>
+    </div>
+    <script>
+        // Radial Bar Chart
+        const radialOptions = {
+            series: [75, 60, 85],
+            chart: {
+                height: 350,
+                type: 'radialBar'
+            },
+            plotOptions: {
+                radialBar: {
+                    dataLabels: {
+                        name: { fontSize: '22px' },
+                        value: { fontSize: '16px' },
+                        total: {
+                            show: true,
+                            label: 'Overall',
+                            formatter: function() { return 73 + '%'; }
+                        }
+                    }
+                }
+            },
+            labels: ['Sales', 'Marketing', 'Support'],
+            colors: ['#00E396', '#008FFB', '#FEB019']
+        };
+        new ApexCharts(document.querySelector("#radialBar"), radialOptions).render();
+
+        // Donut Chart
+        const donutOptions = {
+            series: [44, 55, 41, 17, 15],
+            chart: {
+                type: 'donut',
+                height: 350
+            },
+            labels: ['Direct', 'Social', 'Email', 'Other', 'Referral'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: { width: 200 },
+                    legend: { position: 'bottom' }
+                }
+            }],
+            colors: ['#00E396', '#008FFB', '#FEB019', '#FF4560', '#775DD0']
+        };
+        new ApexCharts(document.querySelector("#donutChart"), donutOptions).render();
+
+        // Semi Circle Gauge
+        const semiOptions = {
+            series: [76],
+            chart: {
+                type: 'radialBar',
+                height: 350,
+                offsetY: -20
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5
+                    },
+                    dataLabels: {
+                        name: { show: false },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
+                    }
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                }
+            },
+            labels: ['Performance']
+        };
+        new ApexCharts(document.querySelector("#semiCircle"), semiOptions).render();
+
+        // Pie Chart
+        const pieOptions = {
+            series: [25, 35, 20, 20],
+            chart: {
+                type: 'pie',
+                height: 350
+            },
+            labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+            title: { text: 'Quarterly Distribution' },
+            colors: ['#FF4560', '#008FFB', '#00E396', '#FEB019']
+        };
+        new ApexCharts(document.querySelector("#pieChart"), pieOptions).render();
+    </script>
+</body>
+</html>

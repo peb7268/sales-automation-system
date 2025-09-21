@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plotly - Waterfall Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plotly - Waterfall Chart Examples</h1>
+        <div id="waterfall1"></div>
+        <div id="waterfall2"></div>
+    </div>
+    <script>
+        // Financial Waterfall Chart
+        const waterfall1 = {
+            type: 'waterfall',
+            orientation: 'v',
+            measure: ['relative', 'relative', 'total', 'relative', 'relative', 'relative', 'total'],
+            x: ['Sales', 'Consulting', 'Net Revenue', 'Purchases', 'Operations', 'Marketing', 'Profit'],
+            text: ['+60', '+30', '90', '-20', '-15', '-10', '45'],
+            y: [60, 30, 0, -20, -15, -10, 0],
+            connector: { line: { color: 'rgb(63, 63, 63)' } },
+            textposition: 'outside'
+        };
+
+        const layout1 = {
+            title: 'Profit & Loss Waterfall',
+            xaxis: { title: 'Category', type: 'category' },
+            yaxis: { title: 'USD (thousands)', type: 'linear' },
+            height: 500
+        };
+
+        Plotly.newPlot('waterfall1', [waterfall1], layout1);
+
+        // Monthly Cash Flow Waterfall
+        const waterfall2 = {
+            type: 'waterfall',
+            orientation: 'v',
+            measure: ['absolute', 'relative', 'relative', 'relative', 'relative', 'relative', 'total'],
+            x: ['Start', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'End'],
+            text: ['100', '+25', '-15', '+30', '-10', '+20', '150'],
+            y: [100, 25, -15, 30, -10, 20, 0],
+            decreasing: { marker: { color: 'Crimson' } },
+            increasing: { marker: { color: 'LightGreen' } },
+            totals: { marker: { color: 'RoyalBlue' } },
+            connector: { line: { color: 'rgb(63, 63, 63)', width: 2 } },
+            textposition: 'outside'
+        };
+
+        const layout2 = {
+            title: 'Monthly Cash Flow Analysis',
+            xaxis: { title: 'Period', type: 'category' },
+            yaxis: { title: 'Cash Flow ($k)', type: 'linear' },
+            height: 500,
+            showlegend: false
+        };
+
+        Plotly.newPlot('waterfall2', [waterfall2], layout2);
+    </script>
+</body>
+</html>

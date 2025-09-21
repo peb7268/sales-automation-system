@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCharts - Heatmap</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chart { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ApexCharts - Heatmap Examples</h1>
+        <div id="heatmap1" class="chart"></div>
+        <div id="heatmap2" class="chart"></div>
+    </div>
+    <script>
+        // Generate heatmap data
+        function generateData(count, range) {
+            const series = [];
+            for (let i = 0; i < count; i++) {
+                const data = [];
+                for (let j = 0; j < 7; j++) {
+                    data.push({
+                        x: 'W' + (j + 1),
+                        y: Math.floor(Math.random() * range.max) + range.min
+                    });
+                }
+                series.push({ name: 'Series ' + (i + 1), data: data });
+            }
+            return series;
+        }
+
+        // Sales Activity Heatmap
+        const heatmapOptions1 = {
+            series: [
+                { name: 'Mon', data: generateData(1, { min: 0, max: 90 })[0].data },
+                { name: 'Tue', data: generateData(1, { min: 0, max: 90 })[0].data },
+                { name: 'Wed', data: generateData(1, { min: 0, max: 90 })[0].data },
+                { name: 'Thu', data: generateData(1, { min: 0, max: 90 })[0].data },
+                { name: 'Fri', data: generateData(1, { min: 0, max: 90 })[0].data }
+            ],
+            chart: {
+                height: 350,
+                type: 'heatmap'
+            },
+            dataLabels: { enabled: false },
+            colors: ["#008FFB"],
+            title: { text: 'Weekly Sales Activity Heatmap' },
+            plotOptions: {
+                heatmap: {
+                    colorScale: {
+                        ranges: [
+                            { from: 0, to: 30, name: 'Low', color: '#00A100' },
+                            { from: 31, to: 60, name: 'Medium', color: '#FFC000' },
+                            { from: 61, to: 90, name: 'High', color: '#FF0000' }
+                        ]
+                    }
+                }
+            }
+        };
+        new ApexCharts(document.querySelector("#heatmap1"), heatmapOptions1).render();
+
+        // Performance Matrix Heatmap
+        const heatmapOptions2 = {
+            series: [
+                { name: 'Metric 1', data: [{ x: 'Team A', y: 85 }, { x: 'Team B', y: 72 }, { x: 'Team C', y: 91 }, { x: 'Team D', y: 68 }] },
+                { name: 'Metric 2', data: [{ x: 'Team A', y: 73 }, { x: 'Team B', y: 88 }, { x: 'Team C', y: 65 }, { x: 'Team D', y: 92 }] },
+                { name: 'Metric 3', data: [{ x: 'Team A', y: 92 }, { x: 'Team B', y: 78 }, { x: 'Team C', y: 85 }, { x: 'Team D', y: 71 }] }
+            ],
+            chart: {
+                height: 350,
+                type: 'heatmap'
+            },
+            dataLabels: { enabled: true },
+            title: { text: 'Team Performance Matrix' },
+            xaxis: { type: 'category' }
+        };
+        new ApexCharts(document.querySelector("#heatmap2"), heatmapOptions2).render();
+    </script>
+</body>
+</html>
